@@ -1,95 +1,66 @@
-﻿namespace Chapter._3._2.H.快捷鍵設置;
+﻿using Chapter._3._2.H.快捷鍵設置.Commands;
+
+namespace Chapter._3._2.H.快捷鍵設置;
 
 public class Macro
 {
-    private readonly Tank _tank;
-    private readonly Telecom _telecom;
-    public readonly Dictionary<char, List<Action>> ActionLookup = new();
+    public readonly Dictionary<char, IEnumerable<ICommand>> CommandLookup = new();
+    private readonly Queue<KeyValuePair<char, IEnumerable<ICommand>>> _queue = new();
+    public readonly Queue<ICommand> UndoQueue = new();
+    public readonly Queue<ICommand> RedoQueue = new();
 
-    public Macro(Tank tank, Telecom telecom)
+    public void BindAction(char key, IEnumerable<ICommand> commands)
     {
-        _tank = tank;
-        _telecom = telecom;
+        CommandLookup.Add(key, commands);
     }
 
-    public char[] Keyboard { get; set; }
-
-    public void BindAction()
+    public void ResetKeyboard()
     {
-        Console.Write("選擇要設定的 Key:");
-        var key = char.Parse(Console.ReadLine());
-        Console.WriteLine($"要將哪些指令設置成快捷鍵 {key} 的巨集（輸入多個數字，以空白隔開）:");
-        ShowAllCommand();
-        var input = Console.ReadLine();
-        var commands = input.Split(' ').Select(int.Parse);
-
-        foreach (var command in commands)
+        foreach (var keyValuePair in CommandLookup)
         {
-            var containsKey = ActionLookup.ContainsKey(key);
-            if (containsKey is false)
-            {
-                switch (command)
-                {
-                    case 0:
-                        ActionLookup.Add(key, new List<Action>() {() => _tank.MoveForward()});
-                        break;
-                    case 1:
-                        ActionLookup.Add(key, new List<Action>() {() => _tank.MoveBackward()});
-                        break;
-                    case 2:
-                        ActionLookup.Add(key, new List<Action>() {() => _telecom.Connect()});
-                        break;
-                    case 3:
-                        ActionLookup.Add(key, new List<Action>() {() => _telecom.Disconnect()});
-                        break;
-                    case 4:
-                        ActionLookup.Add(key, new List<Action>() {Reset});
-                        break;
-                }
-            }
-            else
-            {
-                switch (command)
-                {
-                    case 0:
-                        ActionLookup[key].Add(() => _tank.MoveForward());
-                        break;
-                    case 1:
-                        ActionLookup[key].Add(() => _tank.MoveBackward());
-                        break;
-                    case 2:
-                        ActionLookup[key].Add(() => _telecom.Connect());
-                        break;
-                    case 3:
-                        ActionLookup[key].Add(() => _telecom.Disconnect());
-                        break;
-                    case 4:
-                        ActionLookup[key].Add(Reset);
-                        break;
-                }
-            }
+            _queue.Enqueue(keyValuePair);
         }
+
+        CommandLookup.Clear();
     }
 
-    public void Reset()
+    public void RestoreKeyboard()
     {
-        ActionLookup.Clear();
+        while (_queue.Any())
+        {
+            var keyValuePair = _queue.Dequeue();
+            CommandLookup.Add(keyValuePair.Key, keyValuePair.Value);
+        }
     }
 
     public void Undo()
     {
+        while (UndoQueue.Any())
+        {
+            var command = UndoQueue.Dequeue();
+            command.Undo();
+            RedoQueue.Enqueue(command);
+        }
     }
 
     public void Redo()
     {
+        while (RedoQueue.Any())
+        {
+            var command = RedoQueue.Dequeue();
+            command.Execute();
+            UndoQueue.Enqueue(command);
+        }
     }
 
-    private void ShowAllCommand()
+    public void ShowAllBindingCommand()
     {
-        Console.WriteLine("(0) MoveTankForward");
-        Console.WriteLine("(1) MoveTankBackward");
-        Console.WriteLine("(2) ConnectTelecom");
-        Console.WriteLine("(3) DisconnectTelecom");
-        Console.WriteLine("(4) ResetMainControlKeyboard");
+        foreach (var (key, value) in CommandLookup)
+        {
+            var enumerable = value.Select(command => $"{command.GetType().Name.Replace("Command", "")}");
+            var join = string.Join(" & ", enumerable);
+
+            Console.WriteLine($"{key}: {join}");
+        }
     }
 }

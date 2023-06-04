@@ -1,100 +1,98 @@
-﻿namespace Chapter._3._2.H.快捷鍵設置;
+﻿using Chapter._3._2.H.快捷鍵設置.Commands;
+
+namespace Chapter._3._2.H.快捷鍵設置;
 
 public class MainController
 {
-    private readonly Tank _tank;
-    private readonly Telecom _telecom;
-    private readonly Dictionary<char, Action> _actionLookup = new();
-    private readonly Macro _macro;
+    private readonly Dictionary<char, ICommand> _commandLookup = new();
+    private readonly Queue<KeyValuePair<char, ICommand>> _queue = new();
+    private readonly Stack<ICommand> _undoStack = new();
+    private readonly Stack<ICommand> _redoStack = new();
+    public readonly Macro Macro;
 
-    public MainController(Tank tank, Telecom telecom)
+    public MainController()
     {
-        _tank = tank;
-        _telecom = telecom;
-        _macro = new Macro(tank, telecom);
+        Macro = new Macro();
     }
 
-
-    private void Reset()
+    public void ShowAllBindingCommand()
     {
-        Console.WriteLine($"The MainController has reset keyboard.");
-        _actionLookup.Clear();
+        Macro.ShowAllBindingCommand();
+        foreach (var (key, value) in _commandLookup)
+        {
+            Console.WriteLine($"{key}: {value.GetType().Name.Replace("Command", "")}");
+        }
     }
 
-    public void BindAction()
+    public void ResetKeyboard()
     {
-        Console.Write("設置巨集指令 (y/n)：");
-        var answer = char.Parse(Console.ReadLine());
-        bool isUseMacro = false;
-        if (answer == 'y')
+        Console.WriteLine($"The {nameof(MainController)} has reset keyboard.");
+        foreach (var keyValuePair in _commandLookup)
         {
-            isUseMacro = true;
-        }
-        else if (answer == 'n')
-        {
-            isUseMacro = false;
+            _queue.Enqueue(keyValuePair);
         }
 
+        _commandLookup.Clear();
+        Macro.ResetKeyboard();
+    }
 
-        if (isUseMacro)
+    public void RestoreKeyboard()
+    {
+        Console.WriteLine($"The {nameof(MainController)} has restore keyboard.");
+        while (_queue.Count > 0)
         {
-            _macro.BindAction();
+            var keyValuePair = _queue.Dequeue();
+            _commandLookup.Add(keyValuePair.Key, keyValuePair.Value);
         }
-        else if (isUseMacro is false)
-        {
-            Console.Write("選擇要設定的 Key:");
-            var key = char.Parse(Console.ReadLine());
-            Console.WriteLine($"要將哪一道指令設置到快捷鍵 {key} 上:");
-            ShowAllCommand();
-            var command = int.Parse(Console.ReadLine());
 
-            switch (command)
-            {
-                case 0:
-                    _actionLookup.Add(key, () => _tank.MoveForward());
-                    break;
-                case 1:
-                    _actionLookup.Add(key, () => _tank.MoveBackward());
-                    break;
-                case 2:
-                    _actionLookup.Add(key, () => _telecom.Connect());
-                    break;
-                case 3:
-                    _actionLookup.Add(key, () => _telecom.Disconnect());
-                    break;
-                case 4:
-                    _actionLookup.Add(key, Reset);
-                    break;
-            }
-        }
+        Macro.RestoreKeyboard();
+    }
+
+    public void BindAction(char key, ICommand command)
+    {
+        _commandLookup.Add(key, command);
     }
 
     public void Press(char key)
     {
-        if (_actionLookup.TryGetValue(key, out var command))
+        if (_commandLookup.TryGetValue(key, out var command))
         {
-            command();
+            _undoStack.Push(command);
+            command.Execute();
+            _redoStack.Clear();
         }
-        else if (_macro.ActionLookup.TryGetValue(key, out var commands))
+        else if (Macro.CommandLookup.TryGetValue(key, out var commands))
         {
-            commands.ForEach(t => t.Invoke());
+            foreach (var command1 in commands)
+            {
+                Macro.UndoQueue.Enqueue(command1);
+                command1.Execute();
+                Macro.RedoQueue.Clear();
+            }
         }
     }
 
     public void Undo()
     {
+        if (_undoStack.Any())
+        {
+            var command = _undoStack.Pop();
+            command.Undo();
+            _redoStack.Push(command);
+        }
+        
+        Macro.Undo();
     }
 
     public void Redo()
     {
-    }
-
-    private void ShowAllCommand()
-    {
-        Console.WriteLine("(0) MoveTankForward");
-        Console.WriteLine("(1) MoveTankBackward");
-        Console.WriteLine("(2) ConnectTelecom");
-        Console.WriteLine("(3) DisconnectTelecom");
-        Console.WriteLine("(4) ResetMainControlKeyboard");
+        if (_redoStack.Any())
+        {
+            var command = _redoStack.Pop();
+            command.Execute();
+            _undoStack.Push(command);
+        }
+        
+        Macro.Redo();
     }
 }
