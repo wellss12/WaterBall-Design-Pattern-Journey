@@ -1,4 +1,4 @@
-﻿namespace Chapter._3._2.H.快捷鍵設置;
+﻿namespace Chapter._3._2.H.快捷鍵設置.MilitaryDevice;
 
 public class Tank
 {

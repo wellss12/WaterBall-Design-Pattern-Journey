@@ -1,4 +1,6 @@
-﻿namespace Chapter._3._2.H.快捷鍵設置.Commands;
+﻿using Chapter._3._2.H.快捷鍵設置.MilitaryDevice;
+
+namespace Chapter._3._2.H.快捷鍵設置.Commands;
 
 public class TelecomConnectCommand : ICommand
 {
@@ -9,6 +11,8 @@ public class TelecomConnectCommand : ICommand
         _telecom = telecom;
     }
 
+
+    public string Name => $"Connect{nameof(Telecom)}";
 
     public void Execute()
     {

@@ -1,4 +1,6 @@
-﻿namespace Chapter._3._2.H.快捷鍵設置.Commands;
+﻿using Chapter._3._2.H.快捷鍵設置.MilitaryDevice;
+
+namespace Chapter._3._2.H.快捷鍵設置.Commands;
 
 public class TelecomDisconnectCommand : ICommand
 {
@@ -10,13 +12,15 @@ public class TelecomDisconnectCommand : ICommand
     }
 
 
+    public string Name => $"Disconnect{nameof(Telecom)}";
+
     public void Execute()
     {
-        _telecom.Connect();
+        _telecom.Disconnect();
     }
 
     public void Undo()
     {
-        _telecom.Disconnect();
+        _telecom.Connect();
     }
 }

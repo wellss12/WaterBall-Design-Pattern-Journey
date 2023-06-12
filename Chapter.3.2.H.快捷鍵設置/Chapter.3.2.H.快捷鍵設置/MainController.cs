@@ -4,71 +4,36 @@ namespace Chapter._3._2.H.快捷鍵設置;
 
 public class MainController
 {
-    private readonly Dictionary<char, ICommand> _commandLookup = new();
-    private readonly Queue<KeyValuePair<char, ICommand>> _queue = new();
-    private readonly Stack<ICommand> _undoStack = new();
-    private readonly Stack<ICommand> _redoStack = new();
-    public readonly Macro Macro;
+    private readonly Keyboard _keyboard = new();
+    private readonly Dictionary<char, IEnumerable<ICommand>> _commandLookup = new();
+    private readonly Queue<KeyValuePair<char, IEnumerable<ICommand>>> _keyboardQueue = new();
+    private readonly Stack<IEnumerable<ICommand>> _undoStack = new();
+    private readonly Stack<IEnumerable<ICommand>> _redoStack = new();
 
-    public MainController()
+    public void BindCommands(char key, IEnumerable<ICommand> commands)
     {
-        Macro = new Macro();
-    }
-
-    public void ShowAllBindingCommand()
-    {
-        Macro.ShowAllBindingCommand();
-        foreach (var (key, value) in _commandLookup)
-        {
-            Console.WriteLine($"{key}: {value.GetType().Name.Replace("Command", "")}");
-        }
-    }
-
-    public void ResetKeyboard()
-    {
-        Console.WriteLine($"The {nameof(MainController)} has reset keyboard.");
-        foreach (var keyValuePair in _commandLookup)
-        {
-            _queue.Enqueue(keyValuePair);
-        }
-
-        _commandLookup.Clear();
-        Macro.ResetKeyboard();
-    }
-
-    public void RestoreKeyboard()
-    {
-        Console.WriteLine($"The {nameof(MainController)} has restore keyboard.");
-        while (_queue.Count > 0)
-        {
-            var keyValuePair = _queue.Dequeue();
-            _commandLookup.Add(keyValuePair.Key, keyValuePair.Value);
-        }
-
-        Macro.RestoreKeyboard();
-    }
-
-    public void BindAction(char key, ICommand command)
-    {
-        _commandLookup.Add(key, command);
+        _keyboard.ValidateKey(key);
+        _commandLookup.Add(key, commands);
     }
 
     public void Press(char key)
     {
-        if (_commandLookup.TryGetValue(key, out var command))
+        _keyboard.ValidateKey(key);
+        if (_commandLookup.TryGetValue(key, out var commands))
         {
-            _undoStack.Push(command);
-            command.Execute();
+            var queue = new Queue<ICommand>();
+            foreach (var command in commands)
+            {
+                queue.Enqueue(command);
+                command.Execute();
+            }
+
+            _undoStack.Push(queue);
             _redoStack.Clear();
         }
-        else if (Macro.CommandLookup.TryGetValue(key, out var commands))
+        else
         {
-            foreach (var command1 in commands)
-            {
-                Macro.UndoQueue.Enqueue(command1);
-                command1.Execute();
-                Macro.RedoQueue.Clear();
-            }
+            Console.WriteLine($"Keyboard: {key.ToString()} unsupported");
         }
     }
 
@@ -76,23 +41,65 @@ public class MainController
     {
         if (_undoStack.Any())
         {
-            var command = _undoStack.Pop();
-            command.Undo();
-            _redoStack.Push(command);
+            var commands = _undoStack.Pop();
+            var queue = new Queue<ICommand>();
+            foreach (var command in commands)
+            {
+                command.Undo();
+                queue.Enqueue(command);
+            }
+
+            _redoStack.Push(queue);
         }
-        
-        Macro.Undo();
     }
 
     public void Redo()
     {
         if (_redoStack.Any())
         {
-            var command = _redoStack.Pop();
-            command.Execute();
-            _undoStack.Push(command);
+            var commands = _redoStack.Pop();
+            var queue = new Queue<ICommand>();
+            foreach (var command in commands)
+            {
+                command.Execute();
+                queue.Enqueue(command);
+            }
+
+            _undoStack.Push(queue);
         }
-        
-        Macro.Redo();
+    }
+
+    public void ResetKeyboard()
+    {
+        Console.WriteLine($"The {nameof(MainController)} has reset keyboard.");
+
+        foreach (var keyValuePair in _commandLookup)
+        {
+            _keyboardQueue.Enqueue(keyValuePair);
+        }
+
+        _commandLookup.Clear();
+    }
+
+    public void RestoreKeyboard()
+    {
+        Console.WriteLine($"The {nameof(MainController)} has restore keyboard.");
+
+        while (_keyboardQueue.Any())
+        {
+            var keyValuePair = _keyboardQueue.Dequeue();
+            _commandLookup.Add(keyValuePair.Key, keyValuePair.Value);
+        }
+    }
+
+    public void ShowAllBindingCommand()
+    {
+        foreach (var (key, value) in _commandLookup)
+        {
+            var allCommandName = value.Select(command => command.Name);
+            var allCommandNameByJoin = string.Join(" & ", allCommandName);
+
+            Console.WriteLine($"{key}: {allCommandNameByJoin}");
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Chapter._3._2.H.快捷鍵設置.Commands;
+﻿using Chapter._3._2.H.快捷鍵設置.MilitaryDevice;
+
+namespace Chapter._3._2.H.快捷鍵設置.Commands;
 
 public class TankMoveBackwardCommand : ICommand
 {
@@ -8,6 +10,9 @@ public class TankMoveBackwardCommand : ICommand
     {
         _tank = tank;
     }
+
+    public string Name => $"Move{nameof(Tank)}Backward";
+
 
     public void Execute()
     {

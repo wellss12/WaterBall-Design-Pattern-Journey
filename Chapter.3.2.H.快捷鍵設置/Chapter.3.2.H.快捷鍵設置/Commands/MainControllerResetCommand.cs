@@ -9,6 +9,8 @@ public class MainControllerResetCommand : ICommand
         _mainController = mainController;
     }
 
+    public string Name => $"Reset{nameof(MainController)}Keyboard";
+
     public void Execute()
     {
         _mainController.ResetKeyboard();
