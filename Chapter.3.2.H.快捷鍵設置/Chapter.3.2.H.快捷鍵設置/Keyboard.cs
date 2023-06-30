@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Chapter._3._2.H.快捷鍵設置.Exceptions;
 
 namespace Chapter._3._2.H.快捷鍵設置;
 
@@ -25,7 +26,7 @@ public class Keyboard : IEnumerable<char>
     {
         if (Keys.Any(t => t == key) is false)
         {
-            throw new Exception($"Keyboard: {key.ToString()} unsupported");
+            throw new KeyBoardUnsupportedException(key);
         }
     }
 }
