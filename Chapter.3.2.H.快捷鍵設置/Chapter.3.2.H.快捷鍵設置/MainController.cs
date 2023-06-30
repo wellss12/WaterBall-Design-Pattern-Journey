@@ -4,8 +4,8 @@ namespace Chapter._3._2.H.快捷鍵設置;
 
 public class MainController
 {
+    public readonly Dictionary<char, IEnumerable<ICommand>> ShortKeyCommandLookup = new();
     private readonly Keyboard _keyboard = new();
-    private readonly Dictionary<char, IEnumerable<ICommand>> _commandLookup = new();
     private readonly Queue<KeyValuePair<char, IEnumerable<ICommand>>> _keyboardQueue = new();
     private readonly Stack<IEnumerable<ICommand>> _undoStack = new();
     private readonly Stack<IEnumerable<ICommand>> _redoStack = new();
@@ -13,13 +13,13 @@ public class MainController
     public void BindCommands(char key, IEnumerable<ICommand> commands)
     {
         _keyboard.ValidateKey(key);
-        _commandLookup.Add(key, commands);
+        ShortKeyCommandLookup.Add(key, commands);
     }
 
     public void Press(char key)
     {
         _keyboard.ValidateKey(key);
-        if (_commandLookup.TryGetValue(key, out var commands))
+        if (ShortKeyCommandLookup.TryGetValue(key, out var commands))
         {
             var queue = new Queue<ICommand>();
             foreach (var command in commands)
@@ -73,12 +73,12 @@ public class MainController
     {
         Console.WriteLine($"The {nameof(MainController)} has reset keyboard.");
 
-        foreach (var keyValuePair in _commandLookup)
+        foreach (var keyValuePair in ShortKeyCommandLookup)
         {
             _keyboardQueue.Enqueue(keyValuePair);
         }
 
-        _commandLookup.Clear();
+        ShortKeyCommandLookup.Clear();
     }
 
     public void RestoreKeyboard()
@@ -88,13 +88,13 @@ public class MainController
         while (_keyboardQueue.Any())
         {
             var keyValuePair = _keyboardQueue.Dequeue();
-            _commandLookup.Add(keyValuePair.Key, keyValuePair.Value);
+            ShortKeyCommandLookup.Add(keyValuePair.Key, keyValuePair.Value);
         }
     }
 
-    public void ShowAllBindingCommand()
+    public void ShowAllShortcutKey()
     {
-        foreach (var (key, value) in _commandLookup)
+        foreach (var (key, value) in ShortKeyCommandLookup)
         {
             var allCommandName = value.Select(command => command.Name);
             var allCommandNameByJoin = string.Join(" & ", allCommandName);
