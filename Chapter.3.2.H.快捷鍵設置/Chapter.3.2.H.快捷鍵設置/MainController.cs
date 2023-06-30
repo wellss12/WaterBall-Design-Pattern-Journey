@@ -5,20 +5,20 @@ namespace Chapter._3._2.H.快捷鍵設置;
 public class MainController
 {
     public readonly Dictionary<char, IEnumerable<ICommand>> ShortKeyCommandLookup = new();
-    private readonly Keyboard _keyboard = new();
+    public readonly Keyboard Keyboard = new();
     private readonly Queue<KeyValuePair<char, IEnumerable<ICommand>>> _keyboardQueue = new();
     private readonly Stack<IEnumerable<ICommand>> _undoStack = new();
     private readonly Stack<IEnumerable<ICommand>> _redoStack = new();
 
     public void BindCommands(char key, IEnumerable<ICommand> commands)
     {
-        _keyboard.ValidateKey(key);
+        Keyboard.ValidateKey(key);
         ShortKeyCommandLookup.Add(key, commands);
     }
 
     public void Press(char key)
     {
-        _keyboard.ValidateKey(key);
+        Keyboard.ValidateKey(key);
         if (ShortKeyCommandLookup.TryGetValue(key, out var commands))
         {
             var queue = new Queue<ICommand>();

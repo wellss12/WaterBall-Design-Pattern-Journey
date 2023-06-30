@@ -15,79 +15,87 @@ public class Program
         {'4', new MainControllerResetCommand(MainController)}
     };
 
+    private static bool _isUseMacro;
+
     public static void Main()
     {
         while (true)
         {
             Console.Write("(1) 快捷鍵設置 (2) Undo (3) Redo (字母) 按下按鍵: ");
             var input = Console.ReadLine();
-            if (input == "1")
+            switch (input)
             {
-                Console.Write("設置巨集指令 (y/n)：");
-                var answer = char.Parse(Console.ReadLine());
-                var isUseMacro = answer switch
-                {
-                    'y' => true,
-                    'n' => false,
-                    _ => false
-                };
-
-                HandleBindingSetting(isUseMacro);
-            }
-            else if (input == "2")
-            {
-                MainController.Undo();
-            }
-            else if (input == "3")
-            {
-                MainController.Redo();
-            }
-            else
-            {
-                MainController.Press(char.Parse(input));
+                case "1":
+                    DecideMacroUsage();
+                    HandleBindingSetting();
+                    break;
+                case "2":
+                    MainController.Undo();
+                    break;
+                case "3":
+                    MainController.Redo();
+                    break;
+                default:
+                    MainController.Press(char.Parse(input));
+                    break;
             }
 
             MainController.ShowAllShortcutKey();
         }
     }
 
-    private static void HandleBindingSetting(bool isUseMacro)
+    private static void DecideMacroUsage()
     {
-        var key = GetBindingKey();
-        ShowBindingKeyMessage(isUseMacro, key);
-        ShowAllCommand();
-        var commands = GetBindingCommands();
-        BindCommands(key, commands);
+        Console.Write("設置巨集指令 (y/n)：");
+        var keyInfo = Console.ReadKey();
+        var yesOrNo = keyInfo.KeyChar;
+    
+        _isUseMacro = yesOrNo switch
+        {
+            'y' => true,
+            'n' => false,
+            _ => false
+        };
     }
 
-    private static void BindCommands(char key, IEnumerable<ICommand> commands)
+    private static void HandleBindingSetting()
     {
+        var key = GetBindingKey();
+        MainController.Keyboard.ValidateKey(key);
+        ShowBindingKeyMessage(key);
+        ShowAllCommand();
+        var commands = GetBindingCommands();
         MainController.BindCommands(key, commands);
     }
 
     private static IEnumerable<ICommand> GetBindingCommands()
     {
-        var commandsInput = Console.ReadLine();
-        var commandsBySplit = commandsInput.Split(' ').Select(char.Parse);
+        var commandInput = Console.ReadLine();
+        return _isUseMacro
+            ? GetMacroCommands(commandInput)
+            : GetCommands(commandInput);
+    }
 
-        var allCommands = new List<ICommand>();
-        foreach (var commandIndex in commandsBySplit)
+    private static IEnumerable<ICommand> GetMacroCommands(string commandInput)
+    {
+        var commandsBySplit = commandInput.Split(' ');
+        return commandsBySplit.SelectMany(GetCommands);
+    }
+
+    private static IEnumerable<ICommand> GetCommands(string commandInput)
+    {
+        var commandIndex = char.Parse(commandInput);
+        if (DefaultCommandLookup.TryGetValue(commandIndex, out var defaultCommand))
         {
-            if (DefaultCommandLookup.TryGetValue(commandIndex, out var defaultCommands))
-            {
-                allCommands.Add(defaultCommands);
-            }
-            else if (MainController.ShortKeyCommandLookup.TryGetValue(commandIndex, out var shortKeyCommands))
-            {
-                allCommands.AddRange(shortKeyCommands);
-            }
-            else
-            {
-                throw new ArgumentException($"Command: {commandIndex} unsupported");
-            }
+            return new List<ICommand>() {defaultCommand};
         }
 
-        return allCommands;
+        if (MainController.ShortKeyCommandLookup.TryGetValue(commandIndex, out var shortKeyCommands))
+        {
+            return shortKeyCommands;
+        }
+
+        throw new ArgumentException($"Command: {commandIndex} unsupported");
     }
 
     private static char GetBindingKey()
@@ -96,9 +104,9 @@ public class Program
         return char.Parse(Console.ReadLine());
     }
 
-    private static void ShowBindingKeyMessage(bool isUseMacro, char key)
+    private static void ShowBindingKeyMessage(char key)
     {
-        var bindingKeyMessage = isUseMacro
+        var bindingKeyMessage = _isUseMacro
             ? $"要將哪些指令設置成快捷鍵 {key} 的巨集（輸入多個數字，以空白隔開）:"
             : $"要將哪一道指令設置到快捷鍵 {key} 上:";
         Console.WriteLine(bindingKeyMessage);
