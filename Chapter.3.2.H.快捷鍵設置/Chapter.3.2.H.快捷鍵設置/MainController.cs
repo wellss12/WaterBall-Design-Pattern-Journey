@@ -1,4 +1,5 @@
 ﻿using Chapter._3._2.H.快捷鍵設置.Commands;
+using Chapter._3._2.H.快捷鍵設置.Exceptions;
 
 namespace Chapter._3._2.H.快捷鍵設置;
 
@@ -33,7 +34,7 @@ public class MainController
         }
         else
         {
-            Console.WriteLine($"Keyboard: {key.ToString()} unsupported");
+            throw new KeyBoardUnsupportedException(key);
         }
     }
 

@@ -1,5 +1,6 @@
 ﻿using Chapter._3._2.H.快捷鍵設置;
 using Chapter._3._2.H.快捷鍵設置.Commands;
+using Chapter._3._2.H.快捷鍵設置.Exceptions;
 using Chapter._3._2.H.快捷鍵設置.MilitaryDevice;
 
 public class Program
@@ -23,24 +24,40 @@ public class Program
         {
             Console.Write("(1) 快捷鍵設置 (2) Undo (3) Redo (字母) 按下按鍵: ");
             var input = Console.ReadLine();
-            switch (input)
+            try
             {
-                case "1":
-                    DecideMacroUsage();
-                    HandleBindingSetting();
-                    break;
-                case "2":
-                    MainController.Undo();
-                    break;
-                case "3":
-                    MainController.Redo();
-                    break;
-                default:
-                    MainController.Press(char.Parse(input));
-                    break;
+                HandleInput(input);
+            }
+            catch (KeyBoardUnsupportedException exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+            catch (CommandUnsupportedException exception)
+            {
+                Console.WriteLine(exception.Message);
             }
 
             MainController.ShowAllShortcutKey();
+        }
+    }
+
+    private static void HandleInput(string? input)
+    {
+        switch (input)
+        {
+            case "1":
+                DecideMacroUsage();
+                HandleBindingSetting();
+                break;
+            case "2":
+                MainController.Undo();
+                break;
+            case "3":
+                MainController.Redo();
+                break;
+            default:
+                MainController.Press(char.Parse(input));
+                break;
         }
     }
 
@@ -48,6 +65,7 @@ public class Program
     {
         Console.Write("設置巨集指令 (y/n)：");
         var keyInfo = Console.ReadKey();
+        Console.WriteLine();
         var yesOrNo = keyInfo.KeyChar;
     
         _isUseMacro = yesOrNo switch
@@ -79,29 +97,39 @@ public class Program
     private static IEnumerable<ICommand> GetMacroCommands(string commandInput)
     {
         var commandsBySplit = commandInput.Split(' ');
-        return commandsBySplit.SelectMany(GetCommands);
+
+        var commands = new List<ICommand>();
+        foreach (var command in commandsBySplit)
+        {
+            commands.AddRange(GetCommands(command));
+        }
+
+        return commands;
     }
 
     private static IEnumerable<ICommand> GetCommands(string commandInput)
     {
-        var commandIndex = char.Parse(commandInput);
-        if (DefaultCommandLookup.TryGetValue(commandIndex, out var defaultCommand))
+        var commandKey = char.Parse(commandInput);
+        if (DefaultCommandLookup.TryGetValue(commandKey, out var defaultCommand))
         {
-            return new List<ICommand>() {defaultCommand};
+            return new List<ICommand> {defaultCommand};
         }
 
-        if (MainController.ShortKeyCommandLookup.TryGetValue(commandIndex, out var shortKeyCommands))
+        if (MainController.ShortKeyCommandLookup.TryGetValue(commandKey, out var shortKeyCommands))
         {
             return shortKeyCommands;
         }
 
-        throw new ArgumentException($"Command: {commandIndex} unsupported");
+        throw new CommandUnsupportedException(commandKey);
     }
 
     private static char GetBindingKey()
     {
         Console.Write("選擇要設定的 Key: ");
-        return char.Parse(Console.ReadLine());
+        var keyInfo = Console.ReadKey();
+        Console.WriteLine();
+        
+        return keyInfo.KeyChar;
     }
 
     private static void ShowBindingKeyMessage(char key)
