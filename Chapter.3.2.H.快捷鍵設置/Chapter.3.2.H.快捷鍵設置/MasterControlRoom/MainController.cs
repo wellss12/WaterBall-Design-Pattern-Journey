@@ -1,7 +1,7 @@
 ﻿using Chapter._3._2.H.快捷鍵設置.Commands;
 using Chapter._3._2.H.快捷鍵設置.Exceptions;
 
-namespace Chapter._3._2.H.快捷鍵設置;
+namespace Chapter._3._2.H.快捷鍵設置.MasterControlRoom;
 
 public class MainController
 {

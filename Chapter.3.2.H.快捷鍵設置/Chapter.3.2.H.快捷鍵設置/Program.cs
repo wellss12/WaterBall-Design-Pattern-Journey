@@ -1,6 +1,7 @@
 ﻿using Chapter._3._2.H.快捷鍵設置;
 using Chapter._3._2.H.快捷鍵設置.Commands;
 using Chapter._3._2.H.快捷鍵設置.Exceptions;
+using Chapter._3._2.H.快捷鍵設置.MasterControlRoom;
 using Chapter._3._2.H.快捷鍵設置.MilitaryDevice;
 
 public class Program
