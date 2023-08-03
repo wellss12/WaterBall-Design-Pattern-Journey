@@ -1,14 +1,14 @@
-﻿using Chapter._3._3.H.寶藏地圖.Domain.MapObject;
-using Chapter._3._3.H.寶藏地圖.Domain.MapObject.Role;
-using Chapter._3._3.H.寶藏地圖.Domain.MapObject.Treasures;
+﻿using Chapter._3._3.H.寶藏地圖.Domain.MapObjects;
+using Chapter._3._3.H.寶藏地圖.Domain.MapObjects.Role;
+using Chapter._3._3.H.寶藏地圖.Domain.MapObjects.Treasures;
 
-namespace Chapter._3._3.H.寶藏地圖.Domain.Map;
+namespace Chapter._3._3.H.寶藏地圖.Domain.Maps;
 
 public class Map
 {
     public const int RowLimitIndex = 5;
     public const int ColumnLimitIndex = 5;
-    public readonly MapObject.MapObject?[,] MapObjects = new MapObject.MapObject[RowLimitIndex + 1, ColumnLimitIndex + 1];
+    public readonly MapObject?[,] MapObjects = new MapObject[RowLimitIndex + 1, ColumnLimitIndex + 1];
 
     private readonly Random _random = new();
 
@@ -28,7 +28,7 @@ public class Map
             var position = new Position(randomX, randomY);
             var randomMapObject = _random.Next(0, 2);
 
-            MapObject.MapObject mapObject = randomMapObject switch
+            MapObject mapObject = randomMapObject switch
             {
                 0 => new Obstacle(position, this),
                 1 => new Monster(position, this),
@@ -81,10 +81,10 @@ public class Map
         var randomDirection = _random.Next(0, 3);
         var direction = randomDirection switch
         {
-            0 => MoveDirection.Up,
-            1 => MoveDirection.Right,
-            2 => MoveDirection.Down,
-            3 => MoveDirection.Left,
+            0 => Direction.Up,
+            1 => Direction.Right,
+            2 => Direction.Down,
+            3 => Direction.Left,
         };
 
         var character = new Character(direction, position, this);
@@ -108,18 +108,54 @@ public class Map
         };
     }
 
-    public bool AllMonstersAlive()
+    public bool AllMonstersDead()
     {
-        return GetMonsters().Any();
+        return GetMonsters().Any() is false;
     }
 
-    public bool IsCharacterAlive()
+    public bool IsCharacterDead()
     {
-        return GetCharacter() is not null;
+        return GetCharacter() is null;
     }
 
     public void RemoveMapObjectAt(Position position)
     {
         MapObjects[position.Row, position.Column] = null;
+    }
+
+    public void DisplayMapStatus()
+    {
+        Console.WriteLine($"Map Size: {MapObjects.GetLength(0)} X {MapObjects.GetLength(1)}");
+        var character = GetCharacter();
+        var characterPosition = character.Position;
+        Console.WriteLine(
+            $"Hp: {character.Hp}, State: {character.StateEnum}, Position: [{characterPosition.Row},{characterPosition.Column}]");
+    }
+
+    public void DisplayWinner()
+    {
+        if (AllMonstersDead() || IsCharacterDead())
+        {
+            var winner = AllMonstersDead() ? nameof(Character) : nameof(Monster);
+            Console.WriteLine($"遊戲結束，{winner} 獲勝");
+        }
+        else
+        {
+            Console.WriteLine($"遊戲還沒結束，{nameof(Character)}跟{nameof(Monster)}其中一方還沒有死亡");
+        }
+    }
+
+    public MapObject? GetMapObjectAt(Position targetPosition)
+    {
+        return MapObjects[targetPosition.Row, targetPosition.Column];
+    }
+
+    public void Move(Role role, Position targetPosition)
+    {
+        var originalPosition = role.Position;
+        RemoveMapObjectAt(originalPosition);
+        MapObjects[targetPosition.Row, targetPosition.Column] = role;
+        role.Position = targetPosition;
+        Console.WriteLine($"{role.Symbol}成功從 {originalPosition} 移動到 {targetPosition}");
     }
 }

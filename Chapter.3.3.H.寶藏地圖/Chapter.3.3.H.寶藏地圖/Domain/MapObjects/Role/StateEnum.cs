@@ -1,6 +1,6 @@
-﻿namespace Chapter._3._3.H.寶藏地圖.Domain.MapObject.Role;
+﻿namespace Chapter._3._3.H.寶藏地圖.Domain.MapObjects.Role;
 
-public enum State
+public enum StateEnum
 {
     Normal = 1,
     Invincible = 2,
