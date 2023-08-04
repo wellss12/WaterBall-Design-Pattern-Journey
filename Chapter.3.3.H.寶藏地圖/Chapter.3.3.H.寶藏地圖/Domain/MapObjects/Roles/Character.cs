@@ -1,6 +1,6 @@
 ﻿using Chapter._3._3.H.寶藏地圖.Domain.Maps;
 
-namespace Chapter._3._3.H.寶藏地圖.Domain.MapObjects.Role;
+namespace Chapter._3._3.H.寶藏地圖.Domain.MapObjects.Roles;
 
 /// <summary>
 /// 主角

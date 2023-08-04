@@ -1,8 +1,8 @@
-﻿using Chapter._3._3.H.寶藏地圖.Domain.MapObjects.Role.States;
+﻿using Chapter._3._3.H.寶藏地圖.Domain.MapObjects.Roles.States;
 using Chapter._3._3.H.寶藏地圖.Domain.MapObjects.Treasures;
 using Chapter._3._3.H.寶藏地圖.Domain.Maps;
 
-namespace Chapter._3._3.H.寶藏地圖.Domain.MapObjects.Role;
+namespace Chapter._3._3.H.寶藏地圖.Domain.MapObjects.Roles;
 
 public abstract class Role : MapObject
 {
@@ -34,7 +34,7 @@ public abstract class Role : MapObject
                 var mapObject = Map.GetMapObjectAt(targetPosition);
                 if (mapObject is not null)
                 {
-                    Touch(mapObject);
+                    OnTouched(mapObject);
                 }
                 else
                 {
@@ -67,44 +67,6 @@ public abstract class Role : MapObject
             Console.WriteLine(
                 $"在[{Position.Row},{Position.Column}]的{Symbol} 攻擊在 {attackableRole.Position} 的{attackableRole.Symbol}");
         }
-    }
-
-    protected void Touch(MapObject mapObject)
-    {
-        if (mapObject is Treasure treasure)
-        {
-            Map.RemoveMapObjectAt(treasure.Position);
-            if (treasure is SuperStar)
-            {
-                SetState(StateEnum.Invincible);
-            }
-            else if (treasure is Poison)
-            {
-                SetState(StateEnum.Poisoned);
-            }
-            else if (treasure is AcceleratingPotion)
-            {
-                SetState(StateEnum.Accelerated);
-            }
-            else if (treasure is HealingPotion)
-            {
-                SetState(StateEnum.Healing);
-            }
-            else if (treasure is DevilFruit)
-            {
-                SetState(StateEnum.Orderless);
-            }
-            else if (treasure is KingRock)
-            {
-                SetState(StateEnum.Stockpile);
-            }
-            else if (treasure is DokodemoDoor)
-            {
-                SetState(StateEnum.Teleport);
-            }
-        }
-
-        Console.WriteLine($"{Symbol}待在 [{Position.Row},{Position.Column}] 吧你，前方有其他東西");
     }
 
     public abstract void RoundAction();

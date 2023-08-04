@@ -1,4 +1,4 @@
-﻿namespace Chapter._3._3.H.寶藏地圖.Domain.MapObjects.Role.States;
+﻿namespace Chapter._3._3.H.寶藏地圖.Domain.MapObjects.Roles.States;
 
 public class TeleportState : State
 {

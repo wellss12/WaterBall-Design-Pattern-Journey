@@ -1,6 +1,6 @@
 ﻿using Chapter._3._3.H.寶藏地圖.Domain.Maps;
 
-namespace Chapter._3._3.H.寶藏地圖.Domain.MapObjects.Role;
+namespace Chapter._3._3.H.寶藏地圖.Domain.MapObjects.Roles;
 
 public class Monster : Role
 {
@@ -8,7 +8,6 @@ public class Monster : Role
     {
     }
 
-    public Guid Type { get; set; } = Guid.NewGuid();
     public override char Symbol => 'M';
 
     protected override int FullHp => 1;
@@ -29,13 +28,13 @@ public class Monster : Role
             Position.GetNextPosition(Direction.Up),
             Position.GetNextPosition(Direction.Right),
             Position.GetNextPosition(Direction.Down),
-            Position.GetNextPosition(Direction.Left) 
+            Position.GetNextPosition(Direction.Left)
         };
 
         var mapObjects = positions
             .Where(position => Map.IsValid(position))
             .Select(position => Map.GetMapObjectAt(position));
-        
+
         foreach (var mapObject in mapObjects)
         {
             if (mapObject is Character character)

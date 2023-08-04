@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
 
-namespace Chapter._3._3.H.寶藏地圖.Domain.MapObjects.Role;
+namespace Chapter._3._3.H.寶藏地圖.Domain.MapObjects.Roles;
 
 public enum Direction
 {

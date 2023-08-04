@@ -1,5 +1,5 @@
 ﻿using Chapter._3._3.H.寶藏地圖.Domain.MapObjects;
-using Chapter._3._3.H.寶藏地圖.Domain.MapObjects.Role;
+using Chapter._3._3.H.寶藏地圖.Domain.MapObjects.Roles;
 using Chapter._3._3.H.寶藏地圖.Domain.MapObjects.Treasures;
 
 namespace Chapter._3._3.H.寶藏地圖.Domain.Maps;
@@ -120,7 +120,7 @@ public class Map
 
     public void RemoveMapObjectAt(Position position)
     {
-        // TODO: 那主角的名稱呢
+        // TODO: 那主角的名稱呢 寶藏呢
         MapObjects[position.Row, position.Column] = null;
         Console.WriteLine($"一隻在 {position} 的怪物已死亡，從地圖消失了");
     }
