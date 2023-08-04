@@ -27,7 +27,7 @@ public abstract class Role : MapObject
         {
             var canMoveDirections = GetCanMoveDirections();
             var targetDirection = ChooseMoveDirection(canMoveDirections);
-            var targetPosition = Position.GetMovePosition(targetDirection);
+            var targetPosition = Position.GetNextPosition(targetDirection);
 
             if (IsValidMove(canMoveDirections, targetDirection))
             {
@@ -51,7 +51,23 @@ public abstract class Role : MapObject
         }
     }
 
-    protected internal abstract void Attack();
+    protected internal void Attack()
+    {
+        //      row
+        //column 0 1 2 3 4 5
+        //       1
+        //       2
+        //       3
+        //       4
+        //       5
+
+        foreach (var attackableRole in GetAttackableRoles())
+        {
+            attackableRole.OnDamaged(AttackPower);
+            Console.WriteLine(
+                $"在[{Position.Row},{Position.Column}]的{Symbol} 攻擊在 {attackableRole.Position} 的{attackableRole.Symbol}");
+        }
+    }
 
     protected void Touch(MapObject mapObject)
     {
@@ -116,22 +132,22 @@ public abstract class Role : MapObject
 
     public IEnumerable<Direction> GetCanMoveDirections()
     {
-        if (Position.IsValid(new Position(Position.Row - 1, Position.Column)))
+        if (Map.IsValid(new Position(Position.Row - 1, Position.Column)))
         {
             yield return Direction.Up;
         }
 
-        if (Position.IsValid(new Position(Position.Row, Position.Column + 1)))
+        if (Map.IsValid(new Position(Position.Row, Position.Column + 1)))
         {
             yield return Direction.Right;
         }
 
-        if (Position.IsValid(new Position(Position.Row + 1, Position.Column)))
+        if (Map.IsValid(new Position(Position.Row + 1, Position.Column)))
         {
             yield return Direction.Down;
         }
 
-        if (Position.IsValid(new Position(Position.Row, Position.Column - 1)))
+        if (Map.IsValid(new Position(Position.Row, Position.Column - 1)))
         {
             yield return Direction.Left;
         }
@@ -143,4 +159,5 @@ public abstract class Role : MapObject
     }
 
     protected abstract Direction ChooseMoveDirection(IEnumerable<Direction> canMoveDirections);
+    public abstract IEnumerable<Role> GetAttackableRoles();
 }

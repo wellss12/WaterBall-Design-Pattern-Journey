@@ -12,7 +12,7 @@ public class Monster : Role
     public override char Symbol => 'M';
 
     protected override int FullHp => 1;
-    public override int AttackPower { get; }
+    public override int AttackPower => 50;
 
     protected override Direction ChooseMoveDirection(IEnumerable<Direction> canMoveDirections)
     {
@@ -22,32 +22,27 @@ public class Monster : Role
         return canMoveDirections.ElementAt(next);
     }
 
-
-    protected internal override void Attack()
+    public override IEnumerable<Role> GetAttackableRoles()
     {
-        if (StateEnum == StateEnum.Erupting)
+        var positions = new List<Position>
         {
-            for (var row = 0; row < Map.MapObjects.GetLength(0); row++)
+            Position.GetNextPosition(Direction.Up),
+            Position.GetNextPosition(Direction.Right),
+            Position.GetNextPosition(Direction.Down),
+            Position.GetNextPosition(Direction.Left) 
+        };
+
+        var mapObjects = positions
+            .Where(position => Map.IsValid(position))
+            .Select(position => Map.GetMapObjectAt(position));
+        
+        foreach (var mapObject in mapObjects)
+        {
+            if (mapObject is Character character)
             {
-                for (var column = 0; column < Map.MapObjects.GetLength(1); column++)
-                {
-                    var mapObject = Map.MapObjects[row, column];
-                    if (mapObject is Monster monster)
-                    {
-                        monster.OnDamaged(50);
-                    }
-                }
+                yield return character;
             }
-
-            Console.WriteLine($"位於[{Position.Row},{Position.Column}]的{Symbol}是爆發狀態，全都被攻擊了");
         }
-
-        var character = GetCharacterThatBeAttacked()!;
-        var characterPosition = character.Position;
-
-        Console.WriteLine(
-            $"在[{Position.Row},{Position.Column}]的{Symbol} 攻擊在 [{characterPosition.Row},{characterPosition.Column}]的{character.Symbol}");
-        character.OnDamaged(50);
     }
 
     public override void OnDamaged(int hp)
@@ -159,51 +154,7 @@ public class Monster : Role
 
     private bool HasAttackableCharacterNearby()
     {
-        return GetCharacterThatBeAttacked() is not null;
-    }
-
-
-    private Character? GetCharacterThatBeAttacked()
-    {
-        var mapObjects = Map.MapObjects;
-
-        if (Position.Row > 0)
-        {
-            var top = new Position(Position.Row - 1, Position.Column);
-            if (mapObjects[top.Row, top.Column] is Character topCharacter)
-            {
-                return topCharacter;
-            }
-        }
-
-        if (Position.Column < Map.ColumnLimitIndex)
-        {
-            var right = new Position(Position.Row, Position.Column + 1);
-            if (mapObjects[right.Row, right.Column] is Character rightCharacter)
-            {
-                return rightCharacter;
-            }
-        }
-
-        if (Position.Row < Map.ColumnLimitIndex)
-        {
-            var down = new Position(Position.Row + 1, Position.Column);
-            if (mapObjects[down.Row, down.Column] is Character downCharacter)
-            {
-                return downCharacter;
-            }
-        }
-
-        if (Position.Column > 0)
-        {
-            var left = new Position(Position.Row, Position.Column - 1);
-            if (mapObjects[left.Row, left.Column] is Character leftCharacter)
-            {
-                return leftCharacter;
-            }
-        }
-
-        return null;
+        return GetAttackableRoles().Any();
     }
 
     private Position GetPosition(Direction direction)

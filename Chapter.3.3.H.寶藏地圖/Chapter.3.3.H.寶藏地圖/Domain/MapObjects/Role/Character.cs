@@ -15,7 +15,7 @@ public class Character : Role
     }
 
     protected override int FullHp => 300;
-    public override int AttackPower { get; }
+    public override int AttackPower => 1;
 
     public override char Symbol
     {
@@ -53,109 +53,24 @@ public class Character : Role
         return targetDirection;
     }
 
-    protected internal override void Attack()
+    public override IEnumerable<Role> GetAttackableRoles()
     {
-        //      row
-        //column 0 1 2 3 4 5
-        //       1
-        //       2
-        //       3
-        //       4
-        //       5
-
-        //角色的攻擊範圍擴充至「全地圖」，且攻擊行為變成「全場攻擊」：
-        //每一次攻擊時都會攻擊到地圖中所有其餘角色，且攻擊力為50。三回合過後取得瞬身狀態
-        if (StateEnum == StateEnum.Erupting)
+        var nextPosition = Position;
+        while (Map.IsValid(nextPosition))
         {
-            for (var row = 0; row < Map.MapObjects.GetLength(0); row++)
+            nextPosition = nextPosition.GetNextPosition(Direction);
+            var mapObject = Map.GetMapObjectAt(nextPosition);
+
+            if (mapObject is Obstacle)
             {
-                for (var column = 0; column < Map.MapObjects.GetLength(1); column++)
-                {
-                    var mapObject = Map.MapObjects[row, column];
-                    if (mapObject is Monster monster)
-                    {
-                        monster.OnDamaged(50);
-                    }
-                }
+                break;
             }
 
-            Console.WriteLine($"位於[{Position.Row},{Position.Column}]的{Symbol}是爆發狀態，全都被攻擊了");
-        }
-
-        if (Direction == Direction.Up)
-        {
-            for (var row = Position.Row + 1; row <= 0; row--)
+            if (mapObject is Monster monster)
             {
-                var mapObject = Map.MapObjects[row, Position.Column];
-                if (mapObject is Obstacle)
-                {
-                    Console.WriteLine($"攻擊已被阻擋，在 [{row},{Position.Column}] 上有障礙物，攻擊不能穿越障礙物");
-                    break;
-                }
-
-                if (mapObject is Monster monster)
-                {
-                    monster.OnDamaged(1);
-                }
+                yield return monster;
             }
         }
-        else if (Direction == Direction.Right)
-        {
-            //TODO: Map.MapArray.GetLength(1) - 1 const
-            for (var column = Position.Column + 1; column <= Map.ColumnLimitIndex; column++)
-            {
-                var mapObject = Map.MapObjects[Position.Row, column];
-                if (mapObject is Obstacle)
-                {
-                    Console.WriteLine($"攻擊已被阻擋，在 [{Position.Row},{column}] 上有障礙物，攻擊不能穿越障礙物");
-                    break;
-                }
-
-                if (mapObject is Monster monster)
-                {
-                    monster.OnDamaged(1);
-                    Console.WriteLine($"一隻在 [{Position.Row},{column}] 的怪物已死亡，從地圖消失了");
-                }
-            }
-        }
-        else if (Direction == Direction.Down)
-        {
-            for (var row = Position.Row + 1; row <= Map.RowLimitIndex; row++)
-            {
-                var mapObject = Map.MapObjects[row, Position.Column];
-                if (mapObject is Obstacle)
-                {
-                    Console.WriteLine($"攻擊已被阻擋，在 [{row},{Position.Column}] 上有障礙物，攻擊不能穿越障礙物");
-                    break;
-                }
-
-                if (mapObject is Monster monster)
-                {
-                    monster.OnDamaged(1);
-                    Console.WriteLine($"一隻在 [{row},{Position.Column}] 的怪物已死亡，從地圖消失了");
-                }
-            }
-        }
-        else if (Direction == Direction.Left)
-        {
-            for (var column = Position.Column + 1; column >= 0; column--)
-            {
-                var mapObject = Map.MapObjects[Position.Row, column];
-                if (mapObject is Obstacle)
-                {
-                    Console.WriteLine($"攻擊已被阻擋，在 [{Position.Row},{column}] 上有障礙物，攻擊不能穿越障礙物");
-                    break;
-                }
-
-                if (mapObject is Monster monster)
-                {
-                    monster.OnDamaged(1);
-                    Console.WriteLine($"一隻在 [{Position.Row},{column}] 的怪物已死亡，從地圖消失了");
-                }
-            }
-        }
-
-        Console.WriteLine("攻擊結束");
     }
 
     public override void OnDamaged(int hp)

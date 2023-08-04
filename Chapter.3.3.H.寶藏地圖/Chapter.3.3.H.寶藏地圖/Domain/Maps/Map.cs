@@ -120,7 +120,9 @@ public class Map
 
     public void RemoveMapObjectAt(Position position)
     {
+        // TODO: 那主角的名稱呢
         MapObjects[position.Row, position.Column] = null;
+        Console.WriteLine($"一隻在 {position} 的怪物已死亡，從地圖消失了");
     }
 
     public void DisplayMapStatus()
@@ -157,5 +159,11 @@ public class Map
         MapObjects[targetPosition.Row, targetPosition.Column] = role;
         role.Position = targetPosition;
         Console.WriteLine($"{role.Symbol}成功從 {originalPosition} 移動到 {targetPosition}");
+    }
+
+    public bool IsValid(Position position)
+    {
+        return position.Row is >= 0 and <= RowLimitIndex ||
+               position.Column is >= 0 and <= ColumnLimitIndex;
     }
 }

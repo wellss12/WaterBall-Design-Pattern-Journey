@@ -49,13 +49,7 @@ public class Position : IEquatable<Position>
         return $"[{Row},{Column}]";
     }
 
-    public bool IsValid(Position position)
-    {
-        return position.Row is >= 0 and <= Map.RowLimitIndex ||
-               position.Column is >= 0 and <= Map.ColumnLimitIndex;
-    }
-
-    public Position GetMovePosition(Direction direction)
+    public Position GetNextPosition(Direction direction)
     {
         return direction switch
         {
