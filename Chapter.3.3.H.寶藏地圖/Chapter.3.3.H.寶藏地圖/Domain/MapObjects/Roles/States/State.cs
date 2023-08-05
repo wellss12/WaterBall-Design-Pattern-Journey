@@ -45,9 +45,9 @@ public abstract class State
         }
     }
 
-    protected virtual void OnDamaged(Role attacker)
+    internal virtual void OnDamaged(int damage)
     {
-        Role.Hp -= attacker.AttackPower;
+        Role.Hp -= damage;
         if (Role.IsDead() is false)
         {
             Role.SetState(new InvincibleState(Role));

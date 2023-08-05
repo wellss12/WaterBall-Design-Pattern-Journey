@@ -21,7 +21,7 @@ public class Monster : Role
         return canMoveDirections.ElementAt(next);
     }
 
-    public override IEnumerable<Role> GetAttackableRoles()
+    protected override IEnumerable<Role> GetAttackableRoles()
     {
         var positions = new List<Position>
         {
@@ -41,27 +41,6 @@ public class Monster : Role
             {
                 yield return character;
             }
-        }
-    }
-
-    public override void OnDamaged(int hp)
-    {
-        if (StateEnum == StateEnum.Invincible)
-        {
-            Console.WriteLine($"位於[{Position.Row}{Position.Column}]的{Symbol}是無敵狀態不會被攻擊");
-            return;
-        }
-
-        if (StateEnum is StateEnum.Accelerated or StateEnum.Stockpile)
-        {
-            SetState(StateEnum.Normal);
-        }
-
-        Hp -= hp;
-        if (Hp <= 0)
-        {
-            Map.RemoveMapObjectAt(Position);
-            Console.WriteLine($"一隻在 [{Position.Row},{Position.Column}] 的怪物已死亡，從地圖消失了");
         }
     }
 

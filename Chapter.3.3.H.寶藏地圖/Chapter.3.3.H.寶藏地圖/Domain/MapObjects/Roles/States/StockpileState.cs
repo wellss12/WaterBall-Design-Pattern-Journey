@@ -4,7 +4,6 @@ public class StockpileState : State
 {
     public StockpileState(Role role) : base(role)
     {
-        throw new NotImplementedException();
     }
 
     public override string Name => "蓄力狀態";
@@ -12,5 +11,18 @@ public class StockpileState : State
     protected override State GetStateAfterTimeliness()
     {
         return new EruptingState(Role);
+    }
+
+    internal override void OnDamaged(int damage)
+    {
+        Role.Hp -= damage;
+        if (Role.IsDead() is false)
+        {
+            Role.SetState(new NormalState(Role));
+        }
+        else
+        {
+            Role.Map.RemoveMapObjectAt(Role.Position);
+        }
     }
 }

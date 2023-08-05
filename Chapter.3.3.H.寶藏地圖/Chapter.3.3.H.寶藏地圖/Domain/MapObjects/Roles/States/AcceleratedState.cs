@@ -17,9 +17,9 @@ public class AcceleratedState : State
         }
     }
 
-    protected override void OnDamaged(Role attacker)
+    internal override void OnDamaged(int damage)
     {
-        Role.Hp -= attacker.AttackPower;
+        Role.Hp -= damage;
         if (Role.IsDead() is false)
         {
             Role.SetState(new NormalState(Role));

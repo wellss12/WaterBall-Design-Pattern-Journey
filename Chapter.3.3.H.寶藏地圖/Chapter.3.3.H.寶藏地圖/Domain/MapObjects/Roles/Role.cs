@@ -1,5 +1,4 @@
 ﻿using Chapter._3._3.H.寶藏地圖.Domain.MapObjects.Roles.States;
-using Chapter._3._3.H.寶藏地圖.Domain.MapObjects.Treasures;
 using Chapter._3._3.H.寶藏地圖.Domain.Maps;
 
 namespace Chapter._3._3.H.寶藏地圖.Domain.MapObjects.Roles;
@@ -70,7 +69,11 @@ public abstract class Role : MapObject
     }
 
     public abstract void RoundAction();
-    public abstract void OnDamaged(int hp);
+
+    public void OnDamaged(int attackPower)
+    {
+        State.OnDamaged(attackPower);
+    }
 
     protected void SetState(StateEnum stateEnum)
     {
@@ -121,5 +124,5 @@ public abstract class Role : MapObject
     }
 
     protected abstract Direction ChooseMoveDirection(IEnumerable<Direction> canMoveDirections);
-    public abstract IEnumerable<Role> GetAttackableRoles();
+    protected abstract IEnumerable<Role> GetAttackableRoles();
 }

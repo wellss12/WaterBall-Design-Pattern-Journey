@@ -53,7 +53,7 @@ public class Character : Role
         return targetDirection;
     }
 
-    public override IEnumerable<Role> GetAttackableRoles()
+    protected override IEnumerable<Role> GetAttackableRoles()
     {
         var nextPosition = Position;
         while (Map.IsValid(nextPosition))
@@ -70,32 +70,6 @@ public class Character : Role
             {
                 yield return monster;
             }
-        }
-    }
-
-    public override void OnDamaged(int hp)
-    {
-        if (StateEnum == StateEnum.Invincible)
-        {
-            Console.WriteLine("無敵狀態不會被攻擊");
-            return;
-        }
-
-        if (StateEnum is StateEnum.Accelerated or StateEnum.Stockpile)
-        {
-            SetState(StateEnum.Normal);
-        }
-
-        Hp -= hp;
-        if (Hp > 0)
-        {
-            Console.WriteLine($"{Symbol}受到傷害，剩下{Hp}");
-            SetState(StateEnum.Invincible);
-        }
-        else
-        {
-            Map.RemoveMapObjectAt(Position);
-            Console.WriteLine($"{Symbol} 在 [{Position.Row},{Position.Column}] 死亡");
         }
     }
 

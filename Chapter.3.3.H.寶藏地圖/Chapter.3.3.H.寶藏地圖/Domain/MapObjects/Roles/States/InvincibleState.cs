@@ -9,7 +9,7 @@ public class InvincibleState : State
     public override string Name => "無敵狀態";
     protected override int Timeliness { get; set; } = 2;
 
-    protected override void OnDamaged(Role attacker)
+    internal override void OnDamaged(int damage)
     {
         Console.WriteLine($"{Name}不會受到傷害");
     }
