@@ -9,7 +9,7 @@ public class HealingState : State
     public override string Name => "恢復狀態";
     protected override int Timeliness { get; set; } = 5;
 
-    protected override void PreRoundAction()
+    protected internal override void PreRoundAction()
     {
         Role.Hp += 30;
 

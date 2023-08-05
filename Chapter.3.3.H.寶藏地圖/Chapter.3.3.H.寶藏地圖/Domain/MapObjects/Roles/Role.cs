@@ -68,6 +68,12 @@ public abstract class Role : MapObject
         }
     }
 
+    public void RoundStart()
+    {
+        State.PreRoundAction();
+        State.RoundAction();
+        State.EndRoundAction();
+    }
     public abstract void RoundAction();
 
     public void OnDamaged(int attackPower)

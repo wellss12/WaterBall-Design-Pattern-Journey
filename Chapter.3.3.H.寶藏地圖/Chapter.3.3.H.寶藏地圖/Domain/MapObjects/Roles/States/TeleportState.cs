@@ -9,33 +9,40 @@ public class TeleportState : State
     public override string Name => "暖身狀態";
     protected override int Timeliness { get; set; } = 1;
 
-    protected override void EndRoundAction()
+    protected internal override void EndRoundAction()
     {
         if (Timeliness > 0)
         {
             Timeliness--;
             if (Timeliness is 0)
             {
-                Move();
+                RandomMove();
                 Role.SetState(new NormalState(Role));
             }
         }
     }
 
-    protected override void Move()
+    private void RandomMove()
     {
-        var mapObjects = Role.Map.MapObjects;
-        for (var row = 0; row < mapObjects.GetLength(0); row++)
+        Console.WriteLine($"{Role.Symbol}要被隨機移動到空地拉");
+        
+        var emptyPositions = GetEmptyPositions();
+        var random = new Random();
+        var randomIndex = random.Next(1, emptyPositions.Count());
+        var emptyPosition = emptyPositions.ElementAt(randomIndex);
+        Role.Map.Move(Role, emptyPosition);
+    }
+
+    private IEnumerable<Position> GetEmptyPositions()
+    {
+        var mapCells = Role.Map.MapCells;
+        for (var row = 0; row < mapCells.GetLength(0); row++)
         {
-            for (var column = 0; column < mapObjects.GetLength(1); column++)
+            for (var column = 0; column < mapCells.GetLength(1); column++)
             {
-                if (mapObjects[row, column] is null)
+                if (mapCells[row, column] is null)
                 {
-                    Role.Map.RemoveMapObjectAt(Role.Position);
-                    mapObjects[row, column] = Role;
-                    Role.Position = new Position(row, column);
-                    Console.WriteLine(
-                        $"{Role.Symbol}被隨機移動到空地:[{row},{column}]");
+                    yield return new Position(row, column);
                 }
             }
         }

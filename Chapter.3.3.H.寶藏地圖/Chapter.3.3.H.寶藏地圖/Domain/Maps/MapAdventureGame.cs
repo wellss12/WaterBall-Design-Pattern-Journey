@@ -27,11 +27,11 @@ public class MapAdventureGame
 
         _map.DisplayMapStatus();
         var character = _map.GetCharacter();
-        character.RoundAction();
+        character.RoundStart();
 
         foreach (var monster in _map.GetMonsters())
         {
-            monster.RoundAction();
+            monster.RoundStart();
         }
 
         Console.WriteLine("-----------回合結束-----------");

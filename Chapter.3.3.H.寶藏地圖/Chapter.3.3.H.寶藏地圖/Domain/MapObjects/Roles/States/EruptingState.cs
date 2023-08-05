@@ -11,8 +11,7 @@ public class EruptingState : State
 
     protected override void Attack()
     {
-        // TODO: 全場攻擊
-        var mapObjects = Role.Map.MapObjects;
+        var mapObjects = Role.Map.MapCells;
         for (var row = 0; row < mapObjects.GetLength(0); row++)
         {
             for (var column = 0; column < mapObjects.GetLength(1); column++)

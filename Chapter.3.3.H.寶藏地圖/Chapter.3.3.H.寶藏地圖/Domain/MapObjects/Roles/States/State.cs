@@ -4,10 +4,6 @@ public abstract class State
 {
     protected readonly Role Role;
 
-    /// <summary>
-    /// 每個狀態回合到要改變的狀態是什麼?
-    /// </summary>
-    /// <param name="role"></param>
     protected State(Role role)
     {
         Role = role;
@@ -23,16 +19,16 @@ public abstract class State
         EndRoundAction();
     }
 
-    protected virtual void PreRoundAction()
+    protected internal virtual void PreRoundAction()
     {
     }
 
-    protected virtual void RoundAction()
+    protected internal virtual void RoundAction()
     {
         Role.RoundAction();
     }
 
-    protected virtual void EndRoundAction()
+    protected internal virtual void EndRoundAction()
     {
         var isNotNormal = this is not NormalState;
         if (isNotNormal && Timeliness > 0)
@@ -67,10 +63,5 @@ public abstract class State
     protected virtual void Attack()
     {
         Role.Attack();
-    }
-    
-    protected virtual void Move()
-    {
-        Role.Move();
     }
 }

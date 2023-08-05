@@ -46,86 +46,13 @@ public class Monster : Role
 
     public override void RoundAction()
     {
-        if (StateEnum == StateEnum.Invincible && StatusStartTurn == 2)
-        {
-            SetState(StateEnum.Normal);
-        }
-        else if (StateEnum == StateEnum.Poisoned)
-        {
-            if (StatusStartTurn == 3)
-            {
-                SetState(StateEnum.Normal);
-            }
-            else
-            {
-                Hp -= 15;
-            }
-        }
-        else if (StateEnum == StateEnum.Accelerated && StatusStartTurn == 3)
-        {
-            SetState(StateEnum.Normal);
-        }
-        else if (StateEnum == StateEnum.Healing)
-        {
-            if (StatusStartTurn == 6 || Hp == 300)
-            {
-                SetState(StateEnum.Normal);
-            }
-            else
-            {
-                Hp += 30;
-                if (Hp == 300)
-                {
-                    SetState(StateEnum.Normal);
-                }
-            }
-        }
-        else if (StateEnum == StateEnum.Orderless && StatusStartTurn == 3)
-        {
-            SetState(StateEnum.Normal);
-        }
-        else if (StateEnum == StateEnum.Stockpile && StatusStartTurn == 2)
-        {
-            SetState(StateEnum.Erupting);
-        }
-        else if (StateEnum == StateEnum.Erupting && StatusStartTurn == 3)
-        {
-            SetState(StateEnum.Teleport);
-        }
-        else if (StateEnum == StateEnum.Teleport && StatusStartTurn == 1)
-        {
-            Move();
-            SetState(StateEnum.Normal);
-        }
-        else if (StateEnum == StateEnum.Accelerated)
-        {
-            Console.WriteLine("狀態為加速，可以執行兩次動作");
-            for (var actionCount = 0; actionCount < 2; actionCount++)
-            {
-                HandleAction();
-            }
-        }
-        else
-        {
-            HandleAction();
-        }
-    }
-
-    private void HandleAction()
-    {
-        if (StateEnum == StateEnum.Orderless)
-        {
-            Console.WriteLine("目前為混亂狀態，只能移動");
-            Move();
-        }
-
         if (HasAttackableCharacterNearby())
         {
             Attack();
         }
         else
         {
-            this.Move();
+            Move();
         }
     }
 

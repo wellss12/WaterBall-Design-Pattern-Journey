@@ -8,7 +8,7 @@ public class Map
 {
     public const int RowLimitIndex = 5;
     public const int ColumnLimitIndex = 5;
-    public readonly MapObject?[,] MapObjects = new MapObject[RowLimitIndex + 1, ColumnLimitIndex + 1];
+    public readonly MapObject?[,] MapCells = new MapObject[RowLimitIndex + 1, ColumnLimitIndex + 1];
 
     private readonly Random _random = new();
 
@@ -35,17 +35,17 @@ public class Map
                 2 => GetTreasure(position)
             };
 
-            MapObjects[randomX, randomY] ??= mapObject;
+            MapCells[randomX, randomY] ??= mapObject;
         }
     }
 
     public Character? GetCharacter()
     {
-        for (var x = 0; x < MapObjects.GetLength(0); x++)
+        for (var x = 0; x < MapCells.GetLength(0); x++)
         {
-            for (var y = 0; y < MapObjects.GetLength(1); y++)
+            for (var y = 0; y < MapCells.GetLength(1); y++)
             {
-                if (MapObjects[x, y] is Character character)
+                if (MapCells[x, y] is Character character)
                 {
                     return character;
                 }
@@ -58,11 +58,11 @@ public class Map
     public IEnumerable<Monster> GetMonsters()
     {
         var monsters = new List<Monster>();
-        for (var x = 0; x < MapObjects.GetLength(0); x++)
+        for (var x = 0; x < MapCells.GetLength(0); x++)
         {
-            for (var y = 0; y < MapObjects.GetLength(1); y++)
+            for (var y = 0; y < MapCells.GetLength(1); y++)
             {
-                if (MapObjects[x, y] is Monster monster)
+                if (MapCells[x, y] is Monster monster)
                 {
                     monsters.Add(monster);
                 }
@@ -88,7 +88,7 @@ public class Map
         };
 
         var character = new Character(direction, position, this);
-        MapObjects[randomX, randomY] = character;
+        MapCells[randomX, randomY] = character;
     }
 
     private Treasure GetTreasure(Position position)
@@ -121,13 +121,13 @@ public class Map
     public void RemoveMapObjectAt(Position position)
     {
         // TODO: 那主角的名稱呢 寶藏呢
-        MapObjects[position.Row, position.Column] = null;
+        MapCells[position.Row, position.Column] = null;
         Console.WriteLine($"一隻在 {position} 的怪物已死亡，從地圖消失了");
     }
 
     public void DisplayMapStatus()
     {
-        Console.WriteLine($"Map Size: {MapObjects.GetLength(0)} X {MapObjects.GetLength(1)}");
+        Console.WriteLine($"Map Size: {MapCells.GetLength(0)} X {MapCells.GetLength(1)}");
         var character = GetCharacter();
         var characterPosition = character.Position;
         Console.WriteLine(
@@ -149,14 +149,14 @@ public class Map
 
     public MapObject? GetMapObjectAt(Position targetPosition)
     {
-        return MapObjects[targetPosition.Row, targetPosition.Column];
+        return MapCells[targetPosition.Row, targetPosition.Column];
     }
 
     public void Move(Role role, Position targetPosition)
     {
         var originalPosition = role.Position;
         RemoveMapObjectAt(originalPosition);
-        MapObjects[targetPosition.Row, targetPosition.Column] = role;
+        MapCells[targetPosition.Row, targetPosition.Column] = role;
         role.Position = targetPosition;
         Console.WriteLine($"{role.Symbol}成功從 {originalPosition} 移動到 {targetPosition}");
     }

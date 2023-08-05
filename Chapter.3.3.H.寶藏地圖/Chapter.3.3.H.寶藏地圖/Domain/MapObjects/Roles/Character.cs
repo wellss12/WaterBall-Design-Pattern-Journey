@@ -75,68 +75,21 @@ public class Character : Role
 
     public override void RoundAction()
     {
-        if (StateEnum == StateEnum.Invincible && StatusStartTurn == 2)
-        {
-            SetState(StateEnum.Normal);
-        }
-        else if (StateEnum == StateEnum.Poisoned)
-        {
-            if (StatusStartTurn == 3)
-            {
-                SetState(StateEnum.Normal);
-            }
-            else
-            {
-                Hp -= 15;
-            }
-        }
-        else if (StateEnum == StateEnum.Accelerated && StatusStartTurn == 3)
-        {
-            SetState(StateEnum.Normal);
-        }
-        else if (StateEnum == StateEnum.Healing)
-        {
-            if (StatusStartTurn == 6 || Hp == 300)
-            {
-                SetState(StateEnum.Normal);
-            }
-            else
-            {
-                Hp += 30;
-                if (Hp == 300)
-                {
-                    SetState(StateEnum.Normal);
-                }
-            }
-        }
-        else if (StateEnum == StateEnum.Orderless && StatusStartTurn == 3)
-        {
-            SetState(StateEnum.Normal);
-        }
-        else if (StateEnum == StateEnum.Stockpile && StatusStartTurn == 2)
-        {
-            SetState(StateEnum.Erupting);
-        }
-        else if (StateEnum == StateEnum.Erupting && StatusStartTurn == 3)
-        {
-            SetState(StateEnum.Teleport);
-        }
-        else if (StateEnum == StateEnum.Teleport && StatusStartTurn == 1)
+        Console.WriteLine(@$"
+主角請選擇要執行的動作:
+a.往一個方向移動一格 
+b.朝當前方向執行攻擊");
+
+        var answer = Console.ReadKey().KeyChar;
+        Console.WriteLine();
+        if (answer is 'a')
         {
             Move();
-            SetState(StateEnum.Normal);
         }
-
-        if (StateEnum == StateEnum.Accelerated)
+        else if (answer is 'b')
         {
-            Console.WriteLine("狀態為加速，可以執行兩次動作");
-            for (var actionCount = 0; actionCount < 2; actionCount++)
-            {
-                HandleAction();
-            }
+            Attack();
         }
-
-        HandleAction();
     }
 
     private void HandleAction()

@@ -10,7 +10,7 @@ public class OrderlessState : State
     public override string Name => "混亂狀態";
     protected override int Timeliness { get; set; } = 3;
 
-    protected override void RoundAction()
+    protected internal override void RoundAction()
     {
         Console.WriteLine($"{Name}:只能上下或左右移動");
         Role.Move();
