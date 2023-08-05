@@ -91,29 +91,4 @@ b.朝當前方向執行攻擊");
             Attack();
         }
     }
-
-    private void HandleAction()
-    {
-        if (StateEnum == StateEnum.Orderless)
-        {
-            Console.WriteLine("目前為混亂狀態，只能移動");
-            Move();
-        }
-
-        Console.WriteLine(@$"
-主角請選擇要執行的動作:
-a.往一個方向移動一格 
-b.朝當前方向執行攻擊");
-
-        var answer = Console.ReadKey().KeyChar;
-        Console.WriteLine();
-        if (answer is 'a')
-        {
-            Move();
-        }
-        else if (answer is 'b')
-        {
-            Attack();
-        }
-    }
 }

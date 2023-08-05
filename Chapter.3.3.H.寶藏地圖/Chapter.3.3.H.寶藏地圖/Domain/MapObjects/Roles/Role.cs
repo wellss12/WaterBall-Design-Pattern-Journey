@@ -11,13 +11,9 @@ public abstract class Role : MapObject
         Hp = FullHp;
     }
 
-    public int StatusStartTurn { get; set; }
-
-    // TODO: <=0 remove from map
     protected abstract int FullHp { get; }
     public int Hp { get; set; }
     public abstract int AttackPower { get; }
-    public StateEnum StateEnum { get; set; } = StateEnum.Normal;
     public State State { get; set; }
 
     protected internal void Move()
@@ -74,16 +70,12 @@ public abstract class Role : MapObject
         State.RoundAction();
         State.EndRoundAction();
     }
+
     public abstract void RoundAction();
 
     public void OnDamaged(int attackPower)
     {
         State.OnDamaged(attackPower);
-    }
-
-    protected void SetState(StateEnum stateEnum)
-    {
-        StateEnum = stateEnum;
     }
 
     public bool IsDead()

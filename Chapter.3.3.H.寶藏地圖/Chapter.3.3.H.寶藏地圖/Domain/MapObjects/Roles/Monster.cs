@@ -61,25 +61,4 @@ public class Monster : Role
     {
         return GetAttackableRoles().Any();
     }
-
-    private Position GetPosition(Direction direction)
-    {
-        return direction switch
-        {
-            Direction.Up => new Position(Position.Row - 1, Position.Column),
-            Direction.Right => new Position(Position.Row, Position.Column + 1),
-            Direction.Down => new Position(Position.Row + 1, Position.Column),
-            Direction.Left => new Position(Position.Row, Position.Column - 1),
-            _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
-        };
-    }
-
-    private static bool IsValidMove(Position position)
-    {
-        return position is
-        {
-            Row: >= 0 and <= Map.RowLimitIndex,
-            Column: >= 0 and <= Map.ColumnLimitIndex
-        };
-    }
 }

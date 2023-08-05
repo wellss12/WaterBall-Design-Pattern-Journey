@@ -131,7 +131,7 @@ public class Map
         var character = GetCharacter();
         var characterPosition = character.Position;
         Console.WriteLine(
-            $"Hp: {character.Hp}, State: {character.StateEnum}, Position: [{characterPosition.Row},{characterPosition.Column}]");
+            $"Hp: {character.Hp}, State: {character.State.Name}, Position: [{characterPosition.Row},{characterPosition.Column}]");
     }
 
     public void DisplayWinner()
