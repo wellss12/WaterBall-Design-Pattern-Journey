@@ -11,37 +11,31 @@ public class Monster : Role
     public override char Symbol => 'M';
 
     protected override int FullHp => 1;
-    public override int AttackPower => 50;
+    protected override int AttackPower => 50;
 
     protected override Direction ChooseMoveDirection(IEnumerable<Direction> canMoveDirections)
     {
-        var random = new Random();
-        var next = random.Next(1, canMoveDirections.Count());
-
+        var next = new Random().Next(0, canMoveDirections.Count());
         return canMoveDirections.ElementAt(next);
     }
 
     protected override IEnumerable<Role> GetAttackableRoles()
     {
-        var positions = new List<Position>
+        var validPositions = new List<Position>
         {
             Position.GetNextPosition(Direction.Up),
             Position.GetNextPosition(Direction.Right),
             Position.GetNextPosition(Direction.Down),
             Position.GetNextPosition(Direction.Left)
-        };
+        }.Where(Map.IsValid);
 
-        var mapObjects = positions
-            .Where(position => Map.IsValid(position))
-            .Select(position => Map.GetMapObjectAt(position));
+        var character = validPositions
+            .Select(position => Map.GetMapObjectAt(position))
+            .SingleOrDefault(mapObject => mapObject is Character) as Character;
 
-        foreach (var mapObject in mapObjects)
-        {
-            if (mapObject is Character character)
-            {
-                yield return character;
-            }
-        }
+        return character is not null
+            ? new List<Role> {character}
+            : Enumerable.Empty<Role>();
     }
 
     public override void RoundAction()

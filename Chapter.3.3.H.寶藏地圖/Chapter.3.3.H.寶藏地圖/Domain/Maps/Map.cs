@@ -6,49 +6,23 @@ namespace Chapter._3._3.H.寶藏地圖.Domain.Maps;
 
 public class Map
 {
-    public const int RowLimitIndex = 5;
-    public const int ColumnLimitIndex = 5;
+    private const int RowLimitIndex = 5;
+    private const int ColumnLimitIndex = 5;
+    private readonly Random _random = new(Guid.NewGuid().GetHashCode());
     public readonly MapObject?[,] MapCells = new MapObject[RowLimitIndex + 1, ColumnLimitIndex + 1];
-
-    private readonly Random _random = new();
 
     public Map()
     {
-        GenerateCharacter();
-        GenerateOtherMapObject();
-    }
-
-    private void GenerateOtherMapObject()
-    {
-        var randomMapObjectCount = _random.Next(5, 36);
-        for (var count = 0; count <= randomMapObjectCount; count++)
-        {
-            var randomX = _random.Next(0, 5);
-            var randomY = _random.Next(0, 5);
-            var position = new Position(randomX, randomY);
-            var randomMapObject = _random.Next(0, 2);
-
-            MapObject mapObject = randomMapObject switch
-            {
-                0 => new Obstacle(position, this),
-                1 => new Monster(position, this),
-                2 => GetTreasure(position)
-            };
-
-            MapCells[randomX, randomY] ??= mapObject;
-        }
+        GenerateMapObject();
     }
 
     public Character? GetCharacter()
     {
-        for (var x = 0; x < MapCells.GetLength(0); x++)
+        foreach (var mapObject in MapCells)
         {
-            for (var y = 0; y < MapCells.GetLength(1); y++)
+            if (mapObject is Character character)
             {
-                if (MapCells[x, y] is Character character)
-                {
-                    return character;
-                }
+                return character;
             }
         }
 
@@ -57,60 +31,13 @@ public class Map
 
     public IEnumerable<Monster> GetMonsters()
     {
-        var monsters = new List<Monster>();
-        for (var x = 0; x < MapCells.GetLength(0); x++)
+        foreach (var mapObject in MapCells)
         {
-            for (var y = 0; y < MapCells.GetLength(1); y++)
+            if (mapObject is Monster monster)
             {
-                if (MapCells[x, y] is Monster monster)
-                {
-                    monsters.Add(monster);
-                }
+                yield return monster;
             }
         }
-
-        return monsters;
-    }
-
-    private void GenerateCharacter()
-    {
-        var randomX = _random.Next(0, 5);
-        var randomY = _random.Next(0, 5);
-        var position = new Position(randomX, randomY);
-
-        var randomDirection = _random.Next(0, 3);
-        var direction = randomDirection switch
-        {
-            0 => Direction.Up,
-            1 => Direction.Right,
-            2 => Direction.Down,
-            3 => Direction.Left,
-        };
-
-        var character = new Character(direction, position, this);
-        MapCells[randomX, randomY] = character;
-    }
-
-    private Treasure GetTreasure(Position position)
-    {
-        var random = new Random();
-        var next = random.Next(1, 100);
-        return next switch
-        {
-            <= 10 => new SuperStar(position, this),
-            >= 10 and <= 20 => new DevilFruit(position, this),
-            >= 20 and <= 30 => new KingRock(position, this),
-            >= 30 and <= 40 => new DokodemoDoor(position, this),
-            >= 40 and <= 55 => new HealingPotion(position, this),
-            >= 55 and <= 80 => new Poison(position, this),
-            >= 80 and <= 100 => new AcceleratingPotion(position, this),
-            _ => throw new Exception()
-        };
-    }
-
-    public bool AllMonstersDead()
-    {
-        return GetMonsters().Any() is false;
     }
 
     public bool IsCharacterDead()
@@ -118,20 +45,16 @@ public class Map
         return GetCharacter() is null;
     }
 
-    public void RemoveMapObjectAt(Position position)
+    public bool AllMonstersDead()
     {
-        // TODO: 那主角的名稱呢 寶藏呢
-        MapCells[position.Row, position.Column] = null;
-        Console.WriteLine($"一隻在 {position} 的怪物已死亡，從地圖消失了");
+        return GetMonsters().Any() is false;
     }
 
     public void DisplayMapStatus()
     {
-        Console.WriteLine($"Map Size: {MapCells.GetLength(0)} X {MapCells.GetLength(1)}");
+        Console.WriteLine($"Map Size: {RowLimitIndex + 1} X {ColumnLimitIndex + 1}");
         var character = GetCharacter();
-        var characterPosition = character.Position;
-        Console.WriteLine(
-            $"Hp: {character.Hp}, State: {character.State.Name}, Position: [{characterPosition.Row},{characterPosition.Column}]");
+        Console.WriteLine($"Hp: {character.Hp}, State: {character.State.Name}, Position: {character.Position}");
     }
 
     public void DisplayWinner()
@@ -152,18 +75,97 @@ public class Map
         return MapCells[targetPosition.Row, targetPosition.Column];
     }
 
+    public void RemoveMapObject(MapObject target)
+    {
+        var position = target.Position;
+        MapCells[position.Row, position.Column] = null;
+        Console.WriteLine($"一隻在 {position} 的 {target.Symbol} 從地圖消失了");
+    }
+
     public void Move(Role role, Position targetPosition)
     {
         var originalPosition = role.Position;
-        RemoveMapObjectAt(originalPosition);
+        RemoveMapObject(role);
         MapCells[targetPosition.Row, targetPosition.Column] = role;
         role.Position = targetPosition;
         Console.WriteLine($"{role.Symbol}成功從 {originalPosition} 移動到 {targetPosition}");
     }
 
-    public bool IsValid(Position position)
+    public static bool IsValid(Position position)
     {
         return position.Row is >= 0 and <= RowLimitIndex ||
                position.Column is >= 0 and <= ColumnLimitIndex;
+    }
+
+    public IEnumerable<Position> GetEmptyPositions()
+    {
+        for (var row = 0; row <= RowLimitIndex; row++)
+        {
+            for (var column = 0; column <= ColumnLimitIndex; column++)
+            {
+                if (MapCells[row, column] is null)
+                {
+                    yield return new Position(row, column);
+                }
+            }
+        }
+    }
+
+    private void GenerateMapObject()
+    {
+        var emptyPositions = GetEmptyPositions().ToList();
+        var randomEmptyPositionIndexes = Enumerable
+            .Range(0, emptyPositions.Count)
+            .OrderBy(index => _random.Next())
+            .ToList();
+
+        GenerateCharacter(emptyPositions[randomEmptyPositionIndexes[0]]);
+
+        const int minMapObjectCount = 5;
+        const int maxMapObjectCount = (RowLimitIndex + 1) * (ColumnLimitIndex + 1);
+        var randomMapObjectCount = _random.Next(minMapObjectCount, maxMapObjectCount + 1);
+        for (var index = 1; index < randomMapObjectCount; index++)
+        {
+            var positionIndex = randomEmptyPositionIndexes[index];
+            var position = emptyPositions[positionIndex];
+
+            MapObject mapObject = _random.Next(0, 3) switch
+            {
+                0 => new Obstacle(position, this),
+                1 => new Monster(position, this),
+                2 => GetTreasure(position)
+            };
+
+            MapCells[position.Row, position.Column] = mapObject;
+        }
+    }
+
+    private void GenerateCharacter(Position position)
+    {
+        var direction = _random.Next(0, 4) switch
+        {
+            0 => Direction.Up,
+            1 => Direction.Right,
+            2 => Direction.Down,
+            3 => Direction.Left,
+        };
+
+        var character = new Character(direction, position, this);
+        MapCells[position.Row, position.Column] = character;
+    }
+
+    private Treasure GetTreasure(Position position)
+    {
+        return _random.Next(1, 101) switch
+        {
+            <= 10 => new SuperStar(position, this),
+            <= 20 => new DevilFruit(position, this),
+            <= 30 => new KingRock(position, this),
+            <= 40 => new DokodemoDoor(position, this),
+            <= 55 => new HealingPotion(position, this),
+            <= 80 => new Poison(position, this),
+            <= 100 => new AcceleratingPotion(position, this),
+            _ => throw new Exception()
+        };
     }
 }

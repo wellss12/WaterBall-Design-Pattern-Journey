@@ -13,8 +13,8 @@ public abstract class Role : MapObject
 
     protected abstract int FullHp { get; }
     public int Hp { get; set; }
-    public abstract int AttackPower { get; }
-    public State State { get; set; }
+    protected abstract int AttackPower { get; }
+    public State State { get; private set; }
 
     protected internal void Move()
     {
@@ -58,6 +58,7 @@ public abstract class Role : MapObject
 
         foreach (var attackableRole in GetAttackableRoles())
         {
+            // 重構到這邊 要繼續接著看
             attackableRole.OnDamaged(AttackPower);
             Console.WriteLine(
                 $"在[{Position.Row},{Position.Column}]的{Symbol} 攻擊在 {attackableRole.Position} 的{attackableRole.Symbol}");
@@ -78,20 +79,11 @@ public abstract class Role : MapObject
         State.OnDamaged(attackPower);
     }
 
-    public bool IsDead()
-    {
-        return Hp <= 0;
-    }
+    public bool IsDead() => Hp <= 0;
 
-    public bool IsFullHp()
-    {
-        return Hp >= FullHp;
-    }
+    public bool IsFullHp() => Hp >= FullHp;
 
-    public void SetState(State state)
-    {
-        State = state;
-    }
+    public void SetState(State state) => State = state;
 
     public IEnumerable<Direction> GetCanMoveDirections()
     {

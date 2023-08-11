@@ -11,6 +11,6 @@ public class InvincibleState : State
 
     internal override void OnDamaged(int damage)
     {
-        Console.WriteLine($"{Name}不會受到傷害");
+        Console.WriteLine($"{Role.Symbol}是{Name}不會受到傷害");
     }
 }

@@ -2,12 +2,7 @@
 
 public class MapAdventureGame
 {
-    private readonly Map _map;
-
-    public MapAdventureGame()
-    {
-        _map = new Map();
-    }
+    private readonly Map _map = new();
 
     public void Start()
     {
@@ -16,9 +11,11 @@ public class MapAdventureGame
             RoundStart();
             if (IsGameOver())
             {
-                _map.DisplayWinner();
+                break;
             }
         }
+
+        _map.DisplayWinner();
     }
 
     private void RoundStart()

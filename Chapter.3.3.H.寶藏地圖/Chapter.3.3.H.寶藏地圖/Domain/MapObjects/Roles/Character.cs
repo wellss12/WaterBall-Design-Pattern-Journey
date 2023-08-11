@@ -15,7 +15,7 @@ public class Character : Role
     }
 
     protected override int FullHp => 300;
-    public override int AttackPower => 1;
+    protected override int AttackPower => 1;
 
     public override char Symbol
     {

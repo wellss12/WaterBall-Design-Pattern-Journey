@@ -12,13 +12,6 @@ public abstract class State
     public abstract string Name { get; }
     protected abstract int Timeliness { get; set; }
 
-    public void RoundStart()
-    {
-        PreRoundAction();
-        RoundAction();
-        EndRoundAction();
-    }
-
     protected internal virtual void PreRoundAction()
     {
     }
@@ -46,15 +39,17 @@ public abstract class State
         Role.Hp -= damage;
         if (Role.IsDead() is false)
         {
-            Role.SetState(new InvincibleState(Role));
+            Role.SetState(GetStateAfterOnDamaged());
         }
         else
         {
-            Role.Map.RemoveMapObjectAt(Role.Position);
+            Role.Map.RemoveMapObject(Role);
         }
     }
 
     protected virtual State GetStateAfterTimeliness() => new NormalState(Role);
+    protected virtual State GetStateAfterOnDamaged() => new InvincibleState(Role);
+
     protected virtual IEnumerable<Direction> GetCanMoveDirections()
     {
         return Role.GetCanMoveDirections();

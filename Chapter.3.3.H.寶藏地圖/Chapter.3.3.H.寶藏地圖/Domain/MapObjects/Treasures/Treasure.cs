@@ -21,6 +21,6 @@ abstract class Treasure : MapObject
     {
         var role = mapObject as Role;
         role.SetState(GetStateOnTouched(role));
-        Map.RemoveMapObjectAt(Position);
+        Map.RemoveMapObject(this);
     }
 }

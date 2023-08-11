@@ -15,7 +15,7 @@ public class PoisonedState : State
 
         if (Role.IsDead())
         {
-            Role.Map.RemoveMapObjectAt(Role.Position);
+            Role.Map.RemoveMapObject(Role);
         }
     }
 }

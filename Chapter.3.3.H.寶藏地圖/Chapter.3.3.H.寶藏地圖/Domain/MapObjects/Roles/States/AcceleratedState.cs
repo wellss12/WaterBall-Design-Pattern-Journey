@@ -17,16 +17,5 @@ public class AcceleratedState : State
         }
     }
 
-    internal override void OnDamaged(int damage)
-    {
-        Role.Hp -= damage;
-        if (Role.IsDead() is false)
-        {
-            Role.SetState(new NormalState(Role));
-        }
-        else
-        {
-            Role.Map.RemoveMapObjectAt(Role.Position);
-        }
-    }
+    protected override State GetStateAfterOnDamaged() => new NormalState(Role);
 }
