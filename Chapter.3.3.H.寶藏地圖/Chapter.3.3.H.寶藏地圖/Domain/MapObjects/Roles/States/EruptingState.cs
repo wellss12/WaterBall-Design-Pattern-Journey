@@ -8,29 +8,21 @@ public class EruptingState : State
 
     public override string Name => "爆發狀態";
     protected override int Timeliness { get; set; } = 3;
+    public override int AttackPower => 50;
 
-    protected override void Attack()
+    public override IEnumerable<Role> GetAttackableRoles()
     {
-        var mapObjects = Role.Map.MapCells;
-        for (var row = 0; row < mapObjects.GetLength(0); row++)
+        Console.WriteLine($"位於 {Role.Position} 的 {Role.Symbol} 是{Name}，全場都要被攻擊了");
+
+        foreach (var mapObject in Role.Map.MapCells)
         {
-            for (var column = 0; column < mapObjects.GetLength(1); column++)
+            if (mapObject is Role attackedRole)
             {
-                var mapObject = mapObjects[row, column];
-                if (mapObject is Role attackedRole && attackedRole != Role)
-                {
-                    attackedRole.OnDamaged(50);
-                }
+                yield return attackedRole;
             }
         }
-
-        Console.WriteLine($"位於 {Role.Position} 的{Role.Symbol}是爆發狀態，全場都被攻擊了");
     }
 
-    /// <summary>
-    /// 三回合過後取得瞬身狀態
-    /// </summary>
-    /// <returns></returns>
     protected override State GetStateAfterTimeliness()
     {
         return new TeleportState(Role);

@@ -31,11 +31,37 @@ public class Map
 
     public IEnumerable<Monster> GetMonsters()
     {
+        var monsters = new List<Monster>();
+        
         foreach (var mapObject in MapCells)
         {
             if (mapObject is Monster monster)
             {
-                yield return monster;
+                monsters.Add(monster);
+            }
+        }
+
+        return monsters;
+    }
+
+    private IEnumerable<Treasure> GetTreasures()
+    {
+        foreach (var mapObject in MapCells)
+        {
+            if (mapObject is Treasure treasure)
+            {
+                yield return treasure;
+            }
+        }
+    }
+
+    private IEnumerable<Obstacle> GetObstacles()
+    {
+        foreach (var mapObject in MapCells)
+        {
+            if (mapObject is Obstacle obstacle)
+            {
+                yield return obstacle;
             }
         }
     }
@@ -53,8 +79,23 @@ public class Map
     public void DisplayMapStatus()
     {
         Console.WriteLine($"Map Size: {RowLimitIndex + 1} X {ColumnLimitIndex + 1}");
+        var monstersCount = GetMonsters().Count();
+        var treasureCount = GetTreasures().Count();
+        var obstacleCount = GetObstacles().Count();
+        Console.WriteLine(
+            $"""
+             {nameof(Monster)} 有 {monstersCount} 隻, {nameof(Treasure)} 有 {treasureCount} 隻, {nameof(Obstacle)} 有 {obstacleCount} 隻
+             """);
+
         var character = GetCharacter();
-        Console.WriteLine($"Hp: {character.Hp}, State: {character.State.Name}, Position: {character.Position}");
+        Console.WriteLine(
+            $""" 
+             {nameof(Character)}:
+             Symbol:{character.Symbol}
+             Hp: {character.Hp}
+             State: {character.State.Name}
+             Position: {character.Position} 
+             """);
     }
 
     public void DisplayWinner()
@@ -88,12 +129,12 @@ public class Map
         RemoveMapObject(role);
         MapCells[targetPosition.Row, targetPosition.Column] = role;
         role.Position = targetPosition;
-        Console.WriteLine($"{role.Symbol}成功從 {originalPosition} 移動到 {targetPosition}");
+        Console.WriteLine($"{role.Symbol} 成功從 {originalPosition} 移動到 {targetPosition}");
     }
 
     public static bool IsValid(Position position)
     {
-        return position.Row is >= 0 and <= RowLimitIndex ||
+        return position.Row is >= 0 and <= RowLimitIndex &&
                position.Column is >= 0 and <= ColumnLimitIndex;
     }
 
@@ -133,7 +174,7 @@ public class Map
             {
                 0 => new Obstacle(position, this),
                 1 => new Monster(position, this),
-                2 => GetTreasure(position)
+                2 => GenerateTreasure(position)
             };
 
             MapCells[position.Row, position.Column] = mapObject;
@@ -154,7 +195,7 @@ public class Map
         MapCells[position.Row, position.Column] = character;
     }
 
-    private Treasure GetTreasure(Position position)
+    private Treasure GenerateTreasure(Position position)
     {
         return _random.Next(1, 101) switch
         {

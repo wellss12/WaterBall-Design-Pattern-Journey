@@ -15,7 +15,7 @@ public class Character : Role
     }
 
     protected override int FullHp => 300;
-    protected override int AttackPower => 1;
+    protected internal override int AttackPower => 1;
 
     public override char Symbol
     {
@@ -32,7 +32,7 @@ public class Character : Role
         }
     }
 
-    private Direction Direction { get; }
+    private Direction Direction { get; set; }
 
     protected override Direction ChooseMoveDirection(IEnumerable<Direction> canMoveDirections)
     {
@@ -48,34 +48,36 @@ public class Character : Role
             '←' => Direction.Left,
             _ => throw new ArgumentOutOfRangeException()
         };
+        Direction = targetDirection;
         Console.WriteLine();
 
         return targetDirection;
     }
 
-    protected override IEnumerable<Role> GetAttackableRoles()
+    protected internal override IEnumerable<Role> GetAttackableRoles()
     {
-        var nextPosition = Position;
+        var nextPosition = Position.GetNextPosition(Direction);
         while (Map.IsValid(nextPosition))
         {
-            nextPosition = nextPosition.GetNextPosition(Direction);
             var mapObject = Map.GetMapObjectAt(nextPosition);
 
             if (mapObject is Obstacle)
             {
-                break;
+                yield break;
             }
 
             if (mapObject is Monster monster)
             {
                 yield return monster;
             }
+
+            nextPosition = nextPosition.GetNextPosition(Direction);
         }
     }
 
     public override void RoundAction()
     {
-        Console.WriteLine(@$"
+        Console.WriteLine(@"
 主角請選擇要執行的動作:
 a.往一個方向移動一格 
 b.朝當前方向執行攻擊");

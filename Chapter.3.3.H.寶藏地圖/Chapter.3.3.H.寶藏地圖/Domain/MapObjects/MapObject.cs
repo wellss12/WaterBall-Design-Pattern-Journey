@@ -14,8 +14,8 @@ public abstract class MapObject
     public Position Position { get; protected internal set; }
     public abstract char Symbol { get; }
 
-    protected virtual void OnTouched(MapObject mapObject)
+    protected internal virtual void OnTouched(MapObject mapObject)
     {
-        Console.WriteLine($"{mapObject.Symbol}待在 {mapObject.Position} 吧你，前方有其他 MapObject");
+        Console.WriteLine($"{mapObject.Symbol} 待在 {mapObject.Position} 吧你，前方有 {Symbol}");
     }
 }

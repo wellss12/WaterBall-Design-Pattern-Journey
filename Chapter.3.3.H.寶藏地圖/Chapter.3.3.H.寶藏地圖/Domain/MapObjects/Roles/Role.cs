@@ -11,16 +11,19 @@ public abstract class Role : MapObject
         Hp = FullHp;
     }
 
-    protected abstract int FullHp { get; }
+    protected internal abstract int AttackPower { get; }
     public int Hp { get; set; }
-    protected abstract int AttackPower { get; }
     public State State { get; private set; }
+    protected abstract int FullHp { get; }
+    public abstract void RoundAction();
+    protected abstract Direction ChooseMoveDirection(IEnumerable<Direction> canMoveDirections);
+    protected internal abstract IEnumerable<Role> GetAttackableRoles();
 
     protected internal void Move()
     {
         while (true)
         {
-            var canMoveDirections = GetCanMoveDirections();
+            var canMoveDirections = State.GetCanMoveDirections();
             var targetDirection = ChooseMoveDirection(canMoveDirections);
             var targetPosition = Position.GetNextPosition(targetDirection);
 
@@ -29,7 +32,7 @@ public abstract class Role : MapObject
                 var mapObject = Map.GetMapObjectAt(targetPosition);
                 if (mapObject is not null)
                 {
-                    OnTouched(mapObject);
+                    mapObject.OnTouched(this);
                 }
                 else
                 {
@@ -46,7 +49,7 @@ public abstract class Role : MapObject
         }
     }
 
-    protected internal void Attack()
+    protected void Attack()
     {
         //      row
         //column 0 1 2 3 4 5
@@ -56,13 +59,13 @@ public abstract class Role : MapObject
         //       4
         //       5
 
-        foreach (var attackableRole in GetAttackableRoles())
+        foreach (var attackableRole in State.GetAttackableRoles())
         {
-            // 重構到這邊 要繼續接著看
-            attackableRole.OnDamaged(AttackPower);
-            Console.WriteLine(
-                $"在[{Position.Row},{Position.Column}]的{Symbol} 攻擊在 {attackableRole.Position} 的{attackableRole.Symbol}");
+            Console.WriteLine($"在 {Position} 的 {Symbol} 攻擊在 {attackableRole.Position} 的 {attackableRole.Symbol}");
+            attackableRole.OnDamaged(State.AttackPower);
         }
+
+        Console.WriteLine($"{Symbol} 攻擊結束!");
     }
 
     public void RoundStart()
@@ -72,18 +75,18 @@ public abstract class Role : MapObject
         State.EndRoundAction();
     }
 
-    public abstract void RoundAction();
 
-    public void OnDamaged(int attackPower)
-    {
-        State.OnDamaged(attackPower);
-    }
+    private void OnDamaged(int attackPower) => State.OnDamaged(attackPower);
 
     public bool IsDead() => Hp <= 0;
 
     public bool IsFullHp() => Hp >= FullHp;
 
-    public void SetState(State state) => State = state;
+    public void SetState(State state)
+    {
+        Console.WriteLine($"從{State.Name}變成{state.Name}");
+        State = state;
+    }
 
     public IEnumerable<Direction> GetCanMoveDirections()
     {
@@ -113,6 +116,8 @@ public abstract class Role : MapObject
         return canMoveDirections.Any(direction => direction == targetDirection);
     }
 
-    protected abstract Direction ChooseMoveDirection(IEnumerable<Direction> canMoveDirections);
-    protected abstract IEnumerable<Role> GetAttackableRoles();
+    protected bool HasAttackableRoles()
+    {
+        return GetAttackableRoles().Any();
+    }
 }

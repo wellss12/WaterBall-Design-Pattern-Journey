@@ -9,7 +9,7 @@ public class PoisonedState : State
     public override string Name => "中毒狀態";
     protected override int Timeliness { get; set; } = 3;
 
-    protected internal override void PreRoundAction()
+    internal override void PreRoundAction()
     {
         Role.Hp -= 15;
 

@@ -9,7 +9,7 @@ public class AcceleratedState : State
     public override string Name => "加速狀態";
     protected override int Timeliness { get; set; } = 3;
 
-    protected internal override void RoundAction()
+    internal override void RoundAction()
     {
         for (var count = 0; count < 2; count++)
         {

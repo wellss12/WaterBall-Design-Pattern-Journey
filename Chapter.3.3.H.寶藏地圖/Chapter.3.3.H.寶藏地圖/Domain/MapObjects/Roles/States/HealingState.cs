@@ -9,12 +9,14 @@ public class HealingState : State
     public override string Name => "恢復狀態";
     protected override int Timeliness { get; set; } = 5;
 
-    protected internal override void PreRoundAction()
+    internal override void PreRoundAction()
     {
         Role.Hp += 30;
+        Console.WriteLine($"{Role.Symbol} 的 hp 回復 {30}");
 
         if (Role.IsFullHp())
         {
+            Console.WriteLine($"{Role} 已滿血");
             Role.SetState(new NormalState(Role));
         }
     }

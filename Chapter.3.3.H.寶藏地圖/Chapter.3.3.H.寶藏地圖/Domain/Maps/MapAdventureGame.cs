@@ -36,6 +36,6 @@ public class MapAdventureGame
 
     private bool IsGameOver()
     {
-        return _map.AllMonstersDead() && _map.IsCharacterDead();
+        return _map.AllMonstersDead() || _map.IsCharacterDead();
     }
 }

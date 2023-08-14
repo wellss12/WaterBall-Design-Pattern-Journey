@@ -11,17 +11,15 @@ public abstract class State
 
     public abstract string Name { get; }
     protected abstract int Timeliness { get; set; }
+    public virtual int AttackPower => Role.AttackPower;
 
-    protected internal virtual void PreRoundAction()
+    internal virtual void PreRoundAction()
     {
     }
 
-    protected internal virtual void RoundAction()
-    {
-        Role.RoundAction();
-    }
+    internal virtual void RoundAction() => Role.RoundAction();
 
-    protected internal virtual void EndRoundAction()
+    internal virtual void EndRoundAction()
     {
         var isNotNormal = this is not NormalState;
         if (isNotNormal && Timeliness > 0)
@@ -36,6 +34,7 @@ public abstract class State
 
     internal virtual void OnDamaged(int damage)
     {
+        Console.WriteLine($"{Role.Symbol} 已受到攻擊，hp 損失 {damage}");
         Role.Hp -= damage;
         if (Role.IsDead() is false)
         {
@@ -48,15 +47,10 @@ public abstract class State
     }
 
     protected virtual State GetStateAfterTimeliness() => new NormalState(Role);
+
     protected virtual State GetStateAfterOnDamaged() => new InvincibleState(Role);
 
-    protected virtual IEnumerable<Direction> GetCanMoveDirections()
-    {
-        return Role.GetCanMoveDirections();
-    }
+    public virtual IEnumerable<Direction> GetCanMoveDirections() => Role.GetCanMoveDirections();
 
-    protected virtual void Attack()
-    {
-        Role.Attack();
-    }
+    public virtual IEnumerable<Role> GetAttackableRoles() => Role.GetAttackableRoles();
 }

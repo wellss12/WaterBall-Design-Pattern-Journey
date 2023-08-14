@@ -9,9 +9,8 @@ public class Monster : Role
     }
 
     public override char Symbol => 'M';
-
     protected override int FullHp => 1;
-    protected override int AttackPower => 50;
+    protected internal override int AttackPower => 50;
 
     protected override Direction ChooseMoveDirection(IEnumerable<Direction> canMoveDirections)
     {
@@ -19,7 +18,7 @@ public class Monster : Role
         return canMoveDirections.ElementAt(next);
     }
 
-    protected override IEnumerable<Role> GetAttackableRoles()
+    protected internal override IEnumerable<Role> GetAttackableRoles()
     {
         var validPositions = new List<Position>
         {
@@ -31,16 +30,16 @@ public class Monster : Role
 
         var character = validPositions
             .Select(position => Map.GetMapObjectAt(position))
-            .SingleOrDefault(mapObject => mapObject is Character) as Character;
+            .SingleOrDefault(mapObject => mapObject is Character);
 
         return character is not null
-            ? new List<Role> {character}
+            ? new List<Role> {(character as Role)!}
             : Enumerable.Empty<Role>();
     }
 
     public override void RoundAction()
     {
-        if (HasAttackableCharacterNearby())
+        if (HasAttackableRoles())
         {
             Attack();
         }
@@ -50,9 +49,4 @@ public class Monster : Role
         }
     }
 
-
-    private bool HasAttackableCharacterNearby()
-    {
-        return GetAttackableRoles().Any();
-    }
 }

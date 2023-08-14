@@ -4,21 +4,20 @@ public class OrderlessState : State
 {
     public OrderlessState(Role role) : base(role)
     {
-        throw new NotImplementedException();
     }
 
     public override string Name => "混亂狀態";
     protected override int Timeliness { get; set; } = 3;
 
-    protected internal override void RoundAction()
+    internal override void RoundAction()
     {
         Console.WriteLine($"{Name}:只能上下或左右移動");
         Role.Move();
     }
 
-    protected override IEnumerable<Direction> GetCanMoveDirections()
+    public override IEnumerable<Direction> GetCanMoveDirections()
     {
-        var canMoveDirections = base.GetCanMoveDirections();
+        var canMoveDirections = Role.GetCanMoveDirections();
         var random = new Random();
         var next = random.Next(0, 1);
         var allowMoveDirections = next switch

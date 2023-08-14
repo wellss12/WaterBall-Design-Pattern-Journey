@@ -9,7 +9,7 @@ public class TeleportState : State
     public override string Name => "暖身狀態";
     protected override int Timeliness { get; set; } = 1;
 
-    protected internal override void EndRoundAction()
+    internal override void EndRoundAction()
     {
         if (Timeliness > 0)
         {
@@ -17,7 +17,7 @@ public class TeleportState : State
             if (Timeliness is 0)
             {
                 RandomMove();
-                Role.SetState(new NormalState(Role));
+                Role.SetState(GetStateAfterTimeliness());
             }
         }
     }
