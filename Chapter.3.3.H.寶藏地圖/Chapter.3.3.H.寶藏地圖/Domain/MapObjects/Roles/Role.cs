@@ -25,7 +25,7 @@ public abstract class Role : MapObject
         {
             var canMoveDirections = State.GetCanMoveDirections();
             var targetDirection = ChooseMoveDirection(canMoveDirections);
-            var targetPosition = Position.GetNextPosition(targetDirection);
+            var targetPosition = Position.GetTargetPosition(targetDirection);
 
             if (IsValidMove(canMoveDirections, targetDirection))
             {

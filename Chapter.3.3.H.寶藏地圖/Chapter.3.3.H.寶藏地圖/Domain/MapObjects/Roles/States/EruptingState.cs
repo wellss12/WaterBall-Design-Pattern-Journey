@@ -23,8 +23,5 @@ public class EruptingState : State
         }
     }
 
-    protected override State GetStateAfterTimeliness()
-    {
-        return new TeleportState(Role);
-    }
+    protected override State GetStateAfterTimeliness() => new TeleportState(Role);
 }

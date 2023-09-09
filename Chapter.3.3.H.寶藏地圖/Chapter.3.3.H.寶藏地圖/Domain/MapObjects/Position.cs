@@ -48,7 +48,7 @@ public class Position : IEquatable<Position>
         return $"[{Row},{Column}]";
     }
 
-    public Position GetNextPosition(Direction direction)
+    public Position GetTargetPosition(Direction direction)
     {
         return direction switch
         {

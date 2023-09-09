@@ -22,10 +22,10 @@ public class Monster : Role
     {
         var validPositions = new List<Position>
         {
-            Position.GetNextPosition(Direction.Up),
-            Position.GetNextPosition(Direction.Right),
-            Position.GetNextPosition(Direction.Down),
-            Position.GetNextPosition(Direction.Left)
+            Position.GetTargetPosition(Direction.Up),
+            Position.GetTargetPosition(Direction.Right),
+            Position.GetTargetPosition(Direction.Down),
+            Position.GetTargetPosition(Direction.Left)
         }.Where(Map.IsValid);
 
         var character = validPositions
@@ -48,5 +48,4 @@ public class Monster : Role
             Move();
         }
     }
-
 }

@@ -15,11 +15,12 @@ public abstract class State
 
     internal virtual void PreRoundAction()
     {
+        
     }
 
     internal virtual void RoundAction() => Role.RoundAction();
 
-    internal virtual void EndRoundAction()
+    internal void EndRoundAction()
     {
         var isNotNormal = this is not NormalState;
         if (isNotNormal && Timeliness > 0)
@@ -27,10 +28,12 @@ public abstract class State
             Timeliness--;
             if (Timeliness is 0)
             {
-                Role.SetState(GetStateAfterTimeliness());
+                ExitState();
             }
         }
     }
+
+    protected virtual void ExitState() => Role.SetState(GetStateAfterTimeliness());
 
     internal virtual void OnDamaged(int damage)
     {

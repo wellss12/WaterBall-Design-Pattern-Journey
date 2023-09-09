@@ -56,10 +56,10 @@ public class Character : Role
 
     protected internal override IEnumerable<Role> GetAttackableRoles()
     {
-        var nextPosition = Position.GetNextPosition(Direction);
-        while (Map.IsValid(nextPosition))
+        var targetPosition = Position.GetTargetPosition(Direction);
+        while (Map.IsValid(targetPosition))
         {
-            var mapObject = Map.GetMapObjectAt(nextPosition);
+            var mapObject = Map.GetMapObjectAt(targetPosition);
 
             if (mapObject is Obstacle)
             {
@@ -71,7 +71,7 @@ public class Character : Role
                 yield return monster;
             }
 
-            nextPosition = nextPosition.GetNextPosition(Direction);
+            targetPosition = targetPosition.GetTargetPosition(Direction);
         }
     }
 
