@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chapter.4.1.H.處方診斷系統", "Chapter.4.1.H.處方診斷系統\Chapter.4.1.H.處方診斷系統.csproj", "{B3A0E7EC-4F7E-40D5-8EF6-DE9897B7C85E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B3A0E7EC-4F7E-40D5-8EF6-DE9897B7C85E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3A0E7EC-4F7E-40D5-8EF6-DE9897B7C85E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3A0E7EC-4F7E-40D5-8EF6-DE9897B7C85E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3A0E7EC-4F7E-40D5-8EF6-DE9897B7C85E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
