@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+        <RootNamespace>Chapter._4._2.H.好友關係分析器</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="QuickGraph" Version="3.6.61119.7" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="QuickGraph" Version="3.6.61119.7" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="RelationshipAnalyzerCLI.cs" />
+      <Compile Remove="SuperRelationshipAnalyzerAdapter.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="script.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chapter.4.2.H.好友關係分析器", "Chapter.4.2.H.好友關係分析器.csproj", "{383C0CCF-5AF7-43A9-967A-C7A46154810D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{383C0CCF-5AF7-43A9-967A-C7A46154810D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{383C0CCF-5AF7-43A9-967A-C7A46154810D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{383C0CCF-5AF7-43A9-967A-C7A46154810D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{383C0CCF-5AF7-43A9-967A-C7A46154810D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
