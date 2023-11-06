@@ -1,11 +1,11 @@
 ﻿using System.Text.Json;
 using Chapter._4._1.H.處方診斷系統.Utility;
 
-namespace Chapter._4._1.H.處方診斷系統.Domain.PrescriberSystem.Observer;
+namespace Chapter._4._1.H.處方診斷系統.Domain.PrescriberSystem.Subscribers;
 
 public class PrescriptionJSONFile : IPrescriptionSubscriber
 {
-    public void Update(Case @case)
+    public void OnPrescribed(Case @case)
     {
         var fileName = $"{@case.Prescription.Name}診斷結果.json";
         var filePath = FileUtility.GetFilePath(fileName);

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
-using Chapter._4._1.H.處方診斷系統.Domain.PrescriberSystem.Observer;
 using Chapter._4._1.H.處方診斷系統.Domain.PrescriberSystem.PrescriberRule;
 using System.Text.Json;
+using Chapter._4._1.H.處方診斷系統.Domain.PrescriberSystem.Subscribers;
 using Chapter._4._1.H.處方診斷系統.Utility;
 
 namespace Chapter._4._1.H.處方診斷系統.Domain.PrescriberSystem;
@@ -36,19 +36,6 @@ public class PrescriberFacade
         PatientDatabase.AddRange(patients);
     }
 
-    public void Prescribe(string id, string[] symptoms)
-    {
-        var patient = PatientDatabase.Find(id);
-        if (patient is null)
-        {
-            throw new Exception("Not Found");
-        }
-
-        var prescriptionDemand = new PrescriptionDemand(patient, symptoms);
-        _queue.Enqueue(prescriptionDemand);
-        Console.WriteLine($"病人 {id} 已排入診斷對列，請稍後。");
-    }
-
     public void LoadPotentialDiseaseDataFrom(string textFileName)
     {
         var filePath = FileUtility.GetFilePath(textFileName);
@@ -61,6 +48,19 @@ public class PrescriberFacade
         }
 
         ConfigurePrescriptionRule(diseases);
+    }
+
+    public void Prescribe(string id, string[] symptoms)
+    {
+        var patient = PatientDatabase.Find(id);
+        if (patient is null)
+        {
+            throw new Exception("Not Found");
+        }
+
+        var prescriptionDemand = new PrescriptionDemand(patient, symptoms);
+        _queue.Enqueue(prescriptionDemand);
+        Console.WriteLine($"病人 {id} 已排入診斷對列，請稍後。");
     }
 
     private void ConfigurePrescriptionRule(IEnumerable<string> diseases)
@@ -110,12 +110,12 @@ public class PrescriberFacade
 
     private void ChooseFileFormat()
     {
-        Console.WriteLine("要儲存的檔案格式為？(1) Json (2) CSV");
+        Console.WriteLine("要儲存的檔案格式為？(1) Json (2) CSV (3) Json & CSV");
         int answer;
         while (int.TryParse(Console.ReadLine(), out answer) is false ||
                Enum.IsDefined(typeof(FileFormat), answer) is false)
         {
-            Console.WriteLine("請輸入 1 或 2");
+            Console.WriteLine("請輸入 1 or 2 or 3");
         }
 
         ConfigureSubscriber((FileFormat)answer);
@@ -129,6 +129,10 @@ public class PrescriberFacade
                 Prescriber.Subscribe(new PrescriptionJSONFile());
                 break;
             case FileFormat.CSV:
+                Prescriber.Subscribe(new PrescriptionCSVFile());
+                break;
+            case FileFormat.JsonAndCSV:
+                Prescriber.Subscribe(new PrescriptionJSONFile());
                 Prescriber.Subscribe(new PrescriptionCSVFile());
                 break;
         }

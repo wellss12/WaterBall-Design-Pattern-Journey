@@ -1,5 +1,5 @@
-﻿using Chapter._4._1.H.處方診斷系統.Domain.PrescriberSystem.Observer;
-using Chapter._4._1.H.處方診斷系統.Domain.PrescriberSystem.PrescriberRule;
+﻿using Chapter._4._1.H.處方診斷系統.Domain.PrescriberSystem.PrescriberRule;
+using Chapter._4._1.H.處方診斷系統.Domain.PrescriberSystem.Subscribers;
 
 namespace Chapter._4._1.H.處方診斷系統.Domain.PrescriberSystem;
 
@@ -13,7 +13,7 @@ public class Prescriber
 
     public void OnPrescribed(Case @case)
     {
-        Subscribers.ForEach(subscriber => subscriber.Update(@case));
+        Subscribers.ForEach(subscriber => subscriber.OnPrescribed(@case));
         Subscribers.Clear();
     }
 

@@ -4,4 +4,5 @@ public enum FileFormat
 {
     Json = 1,
     CSV = 2,
+    JsonAndCSV = 3
 }
