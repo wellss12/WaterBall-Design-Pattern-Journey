@@ -29,9 +29,9 @@ public class Patient
     public float Height { get; }
 
     public float Weight { get; }
-    private List<Case> Cases { get; } = new();
+    private readonly List<Case> _cases  = new();
     
-    public void AddCase(Case newCase) => Cases.Add(newCase);
+    public void AddCase(Case newCase) => _cases.Add(newCase);
 
     private static void Validate(string id, string name, int age, float height, float weight)
     {

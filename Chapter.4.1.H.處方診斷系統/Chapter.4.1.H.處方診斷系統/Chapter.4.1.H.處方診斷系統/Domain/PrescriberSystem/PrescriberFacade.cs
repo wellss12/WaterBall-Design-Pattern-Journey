@@ -8,8 +8,13 @@ namespace Chapter._4._1.H.處方診斷系統.Domain.PrescriberSystem;
 
 public class PrescriberFacade
 {
-    public PrescriberFacade()
+    private readonly Prescriber _prescriber;
+    private readonly PatientDatabase _patientDatabase;
+
+    public PrescriberFacade(string patientsFile, string potentialDiseaseFile)
     {
+        _patientDatabase = new PatientDatabase(LoadPatientDataFrom(patientsFile));
+        _prescriber = new Prescriber(LoadPotentialDiseaseDataFrom(potentialDiseaseFile));
         new Thread(Monitor).Start();
     }
 
@@ -22,37 +27,9 @@ public class PrescriberFacade
         {"SleepApneaSyndrome", new SleepApneaSyndromeHandler()}
     };
 
-    private PatientDatabase PatientDatabase { get; } = new();
-
-    private Prescriber Prescriber { get; } = new();
-
-    public void LoadPatientDataFrom(string jsonFileName)
-    {
-        var filePath = FileUtility.GetFilePath(jsonFileName);
-        using var reader = new StreamReader(filePath);
-        var json = reader.ReadToEnd();
-        var patients = JsonSerializer.Deserialize<IEnumerable<Patient>>(json);
-
-        PatientDatabase.AddRange(patients);
-    }
-
-    public void LoadPotentialDiseaseDataFrom(string textFileName)
-    {
-        var filePath = FileUtility.GetFilePath(textFileName);
-        var reader = File.OpenText(filePath);
-
-        var diseases = new List<string>();
-        while (reader.ReadLine() is { } disease)
-        {
-            diseases.Add(disease);
-        }
-
-        ConfigurePrescriptionRule(diseases);
-    }
-
     public void Prescribe(string id, string[] symptoms)
     {
-        var patient = PatientDatabase.Find(id);
+        var patient = _patientDatabase.Find(id);
         if (patient is null)
         {
             throw new Exception("Not Found");
@@ -63,7 +40,32 @@ public class PrescriberFacade
         Console.WriteLine($"病人 {id} 已排入診斷對列，請稍後。");
     }
 
-    private void ConfigurePrescriptionRule(IEnumerable<string> diseases)
+    private static IEnumerable<Patient> LoadPatientDataFrom(string jsonFileName)
+    {
+        var filePath = FileUtility.GetFilePath(jsonFileName);
+        using var reader = new StreamReader(filePath);
+        var json = reader.ReadToEnd();
+        var patients = JsonSerializer.Deserialize<IEnumerable<Patient>>(json);
+
+        return patients!;
+    }
+
+    private PrescriptionRuleHandler LoadPotentialDiseaseDataFrom(string textFileName)
+    {
+        var filePath = FileUtility.GetFilePath(textFileName);
+        var reader = File.OpenText(filePath);
+
+        var diseases = new List<string>();
+        while (reader.ReadLine() is { } disease)
+        {
+            diseases.Add(disease);
+        }
+
+        return CreatePrescriptionRule(diseases);
+    }
+
+
+    private PrescriptionRuleHandler CreatePrescriptionRule(IEnumerable<string> diseases)
     {
         var handlers = diseases
             .Where(disease => _ruleHandlerMap.TryGetValue(disease, out _))
@@ -79,8 +81,10 @@ public class PrescriberFacade
                 return next;
             });
 
-            Prescriber.SetPrescriptionRuleHandler(targetRuleHandler);
+            return targetRuleHandler;
         }
+
+        return null!;
     }
 
     private void Monitor()
@@ -90,16 +94,14 @@ public class PrescriberFacade
             if (_queue.Any())
             {
                 _queue.TryDequeue(out var demand);
-                var prescription = Prescriber.Prescribe(demand);
-                Thread.Sleep(3000);
-                Console.WriteLine($"{demand.Patient.Id} 已診斷完");
+                var prescription = _prescriber.Prescribe(demand);
 
                 var newCase = new Case(demand.Symptoms, DateTime.Now, prescription);
                 demand.Patient.AddCase(newCase);
-                PatientDatabase.Update(demand.Patient);
+                _patientDatabase.Update(demand.Patient);
 
                 ChooseFileFormat();
-                Prescriber.OnPrescribed(newCase);
+                _prescriber.OnPrescribed(newCase);
             }
             else
             {
@@ -118,7 +120,7 @@ public class PrescriberFacade
             Console.WriteLine("請輸入 1 or 2 or 3");
         }
 
-        ConfigureSubscriber((FileFormat)answer);
+        ConfigureSubscriber((FileFormat) answer);
     }
 
     private void ConfigureSubscriber(FileFormat answer)
@@ -126,14 +128,14 @@ public class PrescriberFacade
         switch (answer)
         {
             case FileFormat.Json:
-                Prescriber.Subscribe(new PrescriptionJSONFile());
+                _prescriber.Subscribe(new PrescriptionJSONFile());
                 break;
             case FileFormat.CSV:
-                Prescriber.Subscribe(new PrescriptionCSVFile());
+                _prescriber.Subscribe(new PrescriptionCSVFile());
                 break;
             case FileFormat.JsonAndCSV:
-                Prescriber.Subscribe(new PrescriptionJSONFile());
-                Prescriber.Subscribe(new PrescriptionCSVFile());
+                _prescriber.Subscribe(new PrescriptionJSONFile());
+                _prescriber.Subscribe(new PrescriptionCSVFile());
                 break;
         }
     }

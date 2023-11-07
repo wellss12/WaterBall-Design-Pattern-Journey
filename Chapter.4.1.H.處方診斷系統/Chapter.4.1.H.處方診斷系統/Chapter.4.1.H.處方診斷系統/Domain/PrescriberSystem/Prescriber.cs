@@ -5,25 +5,32 @@ namespace Chapter._4._1.H.處方診斷系統.Domain.PrescriberSystem;
 
 public class Prescriber
 {
-    private PrescriptionRuleHandler PrescriptionRuleHandler { get; set; }
-    private List<IPrescriptionSubscriber> Subscribers { get; } = new();
+    private readonly PrescriptionRuleHandler _prescriptionRuleHandler;
 
-    public Prescription Prescribe(PrescriptionDemand prescriptionDemand) =>
-        PrescriptionRuleHandler.Handle(prescriptionDemand);
+    public Prescriber(PrescriptionRuleHandler prescriptionRuleHandler)
+    {
+        _prescriptionRuleHandler = prescriptionRuleHandler;
+    }
+
+    private readonly List<IPrescriptionSubscriber> _subscribers = new();
+
+    public Prescription Prescribe(PrescriptionDemand demand)
+    {
+        Console.WriteLine($"{demand.Patient.Id} 開始診斷，診斷時間為 3 秒");
+        Thread.Sleep(3000);
+        var prescription = _prescriptionRuleHandler.Handle(demand);
+        Console.WriteLine($"{demand.Patient.Id} 已診斷完");
+        return prescription;
+    }
 
     public void OnPrescribed(Case @case)
     {
-        Subscribers.ForEach(subscriber => subscriber.OnPrescribed(@case));
-        Subscribers.Clear();
+        _subscribers.ForEach(subscriber => subscriber.OnPrescribed(@case));
+        _subscribers.Clear();
     }
 
     public void Subscribe(IPrescriptionSubscriber subscriber)
     {
-        Subscribers.Add(subscriber);
-    }
-    
-    public void SetPrescriptionRuleHandler(PrescriptionRuleHandler ruleHandler)
-    {
-        PrescriptionRuleHandler = ruleHandler;
+        _subscribers.Add(subscriber);
     }
 }

@@ -2,27 +2,20 @@
 
 internal class PatientDatabase
 {
-    private Dictionary<string, Patient> Patients { get; } = new();
+    private readonly Dictionary<string, Patient> _patients;
 
-    public Patient? Find(string id) => Patients.TryGetValue(id, out var patient) ? patient : null;
+    public PatientDatabase(IEnumerable<Patient> patients)
+    {
+        _patients = patients.ToDictionary(patient => patient.Id, patient => patient);
+    }
+
+    public Patient? Find(string id) => _patients.TryGetValue(id, out var patient) ? patient : null;
 
     public void Update(Patient patient)
     {
-        if (Patients.ContainsKey(patient.Id))
+        if (_patients.ContainsKey(patient.Id))
         {
-            Patients[patient.Id] = patient;
-        }
-    }
-
-    public void AddRange(IEnumerable<Patient>? patients)
-    {
-        if (patients is null)
-        {
-            return;
-        }
-        foreach (var patient in patients)
-        {
-            Patients.Add(patient.Id, patient);
+            _patients[patient.Id] = patient;
         }
     }
 }
