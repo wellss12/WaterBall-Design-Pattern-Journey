@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chapter.4.3.H.員工資料表存取", "Chapter.4.3.H.員工資料表存取\Chapter.4.3.H.員工資料表存取.csproj", "{BEC04E6C-4EC8-4178-89D5-595F0E7A569E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BEC04E6C-4EC8-4178-89D5-595F0E7A569E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEC04E6C-4EC8-4178-89D5-595F0E7A569E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEC04E6C-4EC8-4178-89D5-595F0E7A569E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEC04E6C-4EC8-4178-89D5-595F0E7A569E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
