@@ -28,9 +28,9 @@ public class Logger
 
     public Logger? Parent { get; }
     public string Name { get; private init; } = null!;
-    public LevelThreshold LevelThreshold { get; init; }
-    public Exporter Exporter { get; init; }
-    public ILayout Layout { get; init; }
+    public LevelThreshold LevelThreshold { get; set; }
+    public Exporter Exporter { get; set; }
+    public ILayout Layout { get; set; }
 
     public void Trace(string message) => Log(message, LevelThreshold.TRACE);
 

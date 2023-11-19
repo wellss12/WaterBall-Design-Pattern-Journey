@@ -1,10 +1,7 @@
-﻿using Chapter._4._4.H.日誌框架;
-using Chapter._4._4.H.日誌框架.Domain;
+﻿using Chapter._4._4.H.日誌框架.Domain;
 using Chapter._4._4.H.日誌框架.Domain.LogFramework;
 using Chapter._4._4.H.日誌框架.Domain.LogFramework.Exporters;
 using Chapter._4._4.H.日誌框架.Domain.LogFramework.Layouts;
-
-Console.WriteLine("Hello, World!");
 
 var root = Logger.Root(LevelThreshold.DEBUG, new ConsoleExporter(), new StandardLayout());
 var gameLogger = new Logger("app.game", root)
@@ -25,6 +22,11 @@ var aiLogger = new Logger("app.game.ai", gameLogger)
     Layout = new StandardLayout()
 };
 
+// Configured in code 
 LoggerManager.DeclareLoggers(root, gameLogger, aiLogger);
+
+// Configure logging without code
+// LoggerManager.AddLoggerFrom("loggers.json");
+
 var game = new Game();
 game.Start();
