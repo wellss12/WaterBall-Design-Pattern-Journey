@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chapter.3.B.RPG", "Chapter.3.B.RPG\Chapter.3.B.RPG.csproj", "{2FC9419E-C12B-4D0A-AB0A-DA6B6DC58FA6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chapter.3.B.RPG.Tests", "Chapter.3.B.RPG.Tests\Chapter.3.B.RPG.Tests.csproj", "{72C3410A-B6EC-4AE7-A3D0-AC91D5141CF1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2FC9419E-C12B-4D0A-AB0A-DA6B6DC58FA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FC9419E-C12B-4D0A-AB0A-DA6B6DC58FA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FC9419E-C12B-4D0A-AB0A-DA6B6DC58FA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FC9419E-C12B-4D0A-AB0A-DA6B6DC58FA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72C3410A-B6EC-4AE7-A3D0-AC91D5141CF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72C3410A-B6EC-4AE7-A3D0-AC91D5141CF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72C3410A-B6EC-4AE7-A3D0-AC91D5141CF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72C3410A-B6EC-4AE7-A3D0-AC91D5141CF1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

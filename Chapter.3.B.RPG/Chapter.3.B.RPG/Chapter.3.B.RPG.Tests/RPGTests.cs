@@ -1,0 +1,56 @@
+using FluentAssertions;
+
+namespace Chapter._3.B.RPG.Tests;
+
+public class Tests
+{
+    private string _filePath;
+    private StringWriter _stringWriter;
+
+    [SetUp]
+    public void SetUp()
+    {
+        _stringWriter = new StringWriter();
+    }
+
+    [SetUp]
+    public void Setup()
+    {
+    }
+
+    [Test]
+    public void only_basic_attack()
+    {
+        GivenFilePath("TestCases/only-basic-attack.in");
+        GivenStringReader();
+        GivenStringWriter();
+
+        Program.Main();
+
+        var actual = GetActual();
+        actual.Should().Be(GetExpected());
+    }
+
+    private void GivenFilePath(string path)
+    {
+        _filePath = path;
+    }
+
+    private void GivenStringReader()
+    {
+        var input = File.ReadAllText(_filePath);
+        var stringReader = new StringReader(input);
+        // 把檔案內容導入 Console.In
+        Console.SetIn(stringReader);
+    }
+
+    private void GivenStringWriter()
+    {
+        // 把 Console.Out 導到 stringWriter
+        Console.SetOut(_stringWriter);
+    }
+
+    private string GetActual() => _stringWriter.GetStringBuilder().ToString();
+
+    private string GetExpected() => File.ReadAllText(_filePath.Replace(".in", ".out"));
+}
