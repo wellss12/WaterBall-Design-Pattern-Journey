@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using Chapter._3.B.RPG.Domain;
+using Chapter._3.B.RPG.Domain.Actions;
 using Chapter._3.B.RPG.Domain.DecisionStrategies;
 using Action = Chapter._3.B.RPG.Domain.Actions.Action;
 
@@ -36,15 +37,29 @@ public class Program
             var hp = int.Parse(roleInfo[1]);
             var mp = int.Parse(roleInfo[2]);
             var str = int.Parse(roleInfo[3]);
+            var skillNames = roleInfo[4..];
+
+            var skills = new List<Action>();
+            foreach (var skillName in skillNames)
+            {
+                if (skillName == "水球")
+                {
+                    skills.Add(new Waterball());
+                }
+                else if (skillName == "火球")
+                {
+                    skills.Add(new Fireball());
+                }
+            }
+
 
             var role = name == "英雄"
-                ? new Hero(name, hp, mp, str, new List<Action>(), new CLIDecisionStrategy())
-                : new Role(name, hp, mp, str, new List<Action>(), new AIDecisionStrategy());
+                ? new Hero(name, hp, mp, str, skills, new CLIDecisionStrategy())
+                : new Role(name, hp, mp, str, skills, new AIDecisionStrategy());
             roles.Add(role);
         }
 
         var troop = new Troop(int.Parse(troopStart.Substring(4, 1)), roles);
-        roles.ForEach(role => role.Troop = troop);
         return troop;
     }
 }

@@ -21,7 +21,7 @@ public class CLIDecisionStrategy : DecisionStrategy
 
             if (action.MpCost > Role.Mp)
             {
-                Console.WriteLine($"MP 不足，請重新選擇行動");
+                Console.WriteLine("你缺乏 MP，不能進行此行動。");
                 continue;
             }
 

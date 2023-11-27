@@ -11,6 +11,7 @@ public class Troop
     {
         Number = number;
         Roles = roles;
+        roles.ForEach(role => role.Troop = this);
     }
 
     public bool IsAnnihilated() => Roles.All(role => role.IsDead());
@@ -19,6 +20,4 @@ public class Troop
     {
         Roles.Add(role);
     }
-
-    public bool HasRoles() => Roles.Any();
 }

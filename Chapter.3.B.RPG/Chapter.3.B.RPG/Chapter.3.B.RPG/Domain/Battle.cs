@@ -52,13 +52,12 @@ public class Battle
 
     private Role FindHero() => _t1.Roles.Single(role => role is Hero);
 
-    public IEnumerable<Role> GetEnemy(Role target) =>
-        target.Troop == _t1
+    public IEnumerable<Role> GetEnemies(Role target)
+    {
+        var enemies = target.Troop == _t1
             ? _t2.Roles
             : _t1.Roles;
-
-    public IEnumerable<Role> GetAlly(Role target) =>
-        target.Troop == _t1
-            ? _t1.Roles.Where(role => role != target)
-            : _t2.Roles.Where(role => role != target);
+        
+        return enemies.Where(enemy => enemy.IsAlive());
+    }
 }

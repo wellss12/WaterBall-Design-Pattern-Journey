@@ -34,7 +34,7 @@ public class Role
         Console.WriteLine($"輪到 [{Troop.Number}]{Name} (HP: {Hp}, MP: {Mp}, STR: {Str}, {State})。");
         var action = _decisionStrategy.ChooseAction();
 
-        var enemy = Troop.Battle.GetEnemy(this).Where(enemy => enemy.IsAlive());
+        var enemy = Troop.Battle.GetEnemies(this);
         var targets = Enumerable.Empty<Role>();
         
         if (enemy.Count() > action.TargetCount)

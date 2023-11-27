@@ -31,6 +31,19 @@ public class Tests
         actual.Should().Be(GetExpected());
     }
 
+    [Test]
+    public void waterball_and_fireball_1v2()
+    {
+        GivenFilePath("TestCases/waterball-and-fireball-1v2.in");
+        GivenStringReader();
+        GivenStringWriter();
+
+        Program.Main();
+
+        var actual = GetActual();
+        actual.Should().Be(GetExpected());
+    }
+
     private void GivenFilePath(string path)
     {
         _filePath = path;
