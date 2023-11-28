@@ -49,9 +49,11 @@ public class Program
                 else if (skillName == "火球")
                 {
                     skills.Add(new Fireball());
+                }else if (skillName == "自我治療")
+                {
+                    skills.Add(new SelfHealing());
                 }
             }
-
 
             var role = name == "英雄"
                 ? new Hero(name, hp, mp, str, skills, new CLIDecisionStrategy())

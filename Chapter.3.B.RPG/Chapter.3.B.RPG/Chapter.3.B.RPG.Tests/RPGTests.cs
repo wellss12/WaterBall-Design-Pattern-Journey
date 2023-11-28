@@ -44,6 +44,19 @@ public class Tests
         actual.Should().Be(GetExpected());
     }
 
+    [Test]
+    public void self_healing()
+    {
+        GivenFilePath("TestCases/self-healing.in");
+        GivenStringReader();
+        GivenStringWriter();
+
+        Program.Main();
+
+        var actual = GetActual();
+        actual.Should().Be(GetExpected());
+    }
+
     private void GivenFilePath(string path)
     {
         _filePath = path;
@@ -63,7 +76,13 @@ public class Tests
         Console.SetOut(_stringWriter);
     }
 
-    private string GetActual() => _stringWriter.GetStringBuilder().ToString();
+    private string GetActual()
+    {
+        return _stringWriter.GetStringBuilder().ToString();
+    }
 
-    private string GetExpected() => File.ReadAllText(_filePath.Replace(".in", ".out"));
+    private string GetExpected()
+    {
+        return File.ReadAllText(_filePath.Replace(".in", ".out"));
+    }
 }
