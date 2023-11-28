@@ -1,9 +1,11 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using Chapter._3.B.RPG.Domain;
-using Chapter._3.B.RPG.Domain.Actions;
+using Chapter._3.B.RPG.Domain.Actions.Skills;
 using Chapter._3.B.RPG.Domain.DecisionStrategies;
 using Action = Chapter._3.B.RPG.Domain.Actions.Action;
+
+namespace Chapter._3.B.RPG;
 
 public class Program
 {
@@ -52,6 +54,9 @@ public class Program
                 }else if (skillName == "自我治療")
                 {
                     skills.Add(new SelfHealing());
+                }else if (skillName == "石化")
+                {
+                    skills.Add(new Petrochemical());
                 }
             }
 

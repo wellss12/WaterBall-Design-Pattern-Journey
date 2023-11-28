@@ -1,5 +1,6 @@
 ﻿using Chapter._3.B.RPG.Domain.Actions;
 using Chapter._3.B.RPG.Domain.DecisionStrategies;
+using Chapter._3.B.RPG.Domain.States;
 using Action = Chapter._3.B.RPG.Domain.Actions.Action;
 
 namespace Chapter._3.B.RPG.Domain;
@@ -13,7 +14,7 @@ public class Role
         Hp = hp;
         Mp = mp;
         Str = str;
-        State = new NormalState();
+        State = new NormalState(this);
         actions.Insert(0, new BasicAttack());
         Actions = actions;
         Actions.ForEach(action => action.Role = this);
@@ -29,14 +30,20 @@ public class Role
     public Troop Troop { get; set; }
     public List<Action> Actions { get; }
 
-    public void ExecuteAction()
+    public void StartAction()
     {
         Console.WriteLine($"輪到 [{Troop.Number}]{Name} (HP: {Hp}, MP: {Mp}, STR: {Str}, {State})。");
+        State.ExecuteAction();
+        State.EndRoundAction();
+    }
+
+    public void ExecuteAction()
+    {
         var action = _decisionStrategy.ChooseAction();
 
         var enemy = Troop.Battle.GetEnemies(this);
         var targets = Enumerable.Empty<Role>();
-        
+
         if (enemy.Count() > action.TargetCount)
         {
             targets = _decisionStrategy.ChooseTargets(enemy, action.TargetCount);

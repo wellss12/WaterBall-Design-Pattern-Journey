@@ -32,7 +32,7 @@ public class Battle
         {
             if (role.IsAlive())
             {
-                role.ExecuteAction();
+                role.StartAction();
             }
 
             if (IsGameOver())
