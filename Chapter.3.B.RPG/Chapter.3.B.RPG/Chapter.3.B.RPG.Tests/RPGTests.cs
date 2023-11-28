@@ -70,6 +70,19 @@ public class Tests
         actual.Should().Be(GetExpected());
     }
 
+    [Test]
+    public void poison()
+    {
+        GivenFilePath("TestCases/poison.in");
+        GivenStringReader();
+        GivenStringWriter();
+
+        Program.Main();
+
+        var actual = GetActual();
+        actual.Should().Be(GetExpected());
+    }
+
     private void GivenFilePath(string path)
     {
         _filePath = path;

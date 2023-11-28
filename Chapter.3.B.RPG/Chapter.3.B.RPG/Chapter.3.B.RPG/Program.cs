@@ -57,6 +57,9 @@ public class Program
                 }else if (skillName == "石化")
                 {
                     skills.Add(new Petrochemical());
+                }else if (skillName == "下毒")
+                {
+                   skills.Add(new Poison());
                 }
             }
 

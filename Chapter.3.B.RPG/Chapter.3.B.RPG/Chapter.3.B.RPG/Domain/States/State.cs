@@ -13,7 +13,6 @@ public abstract class State
     protected abstract string Name { get; }
     public override string ToString() => $"State: {Name}";
 
-    // public virtual bool CanExecuteAction() => true;
     public virtual void ExecuteAction() => Role.ExecuteAction();
 
     public virtual void EndRoundAction()
