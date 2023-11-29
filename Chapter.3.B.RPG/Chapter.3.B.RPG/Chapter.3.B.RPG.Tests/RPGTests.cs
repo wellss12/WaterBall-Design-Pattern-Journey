@@ -13,11 +13,6 @@ public class Tests
         _stringWriter = new StringWriter();
     }
 
-    [SetUp]
-    public void Setup()
-    {
-    }
-
     [Test]
     public void only_basic_attack()
     {
@@ -74,6 +69,19 @@ public class Tests
     public void poison()
     {
         GivenFilePath("TestCases/poison.in");
+        GivenStringReader();
+        GivenStringWriter();
+
+        Program.Main();
+
+        var actual = GetActual();
+        actual.Should().Be(GetExpected());
+    }
+
+    [Test]
+    public void summon()
+    {
+        GivenFilePath("TestCases/summon.in");
         GivenStringReader();
         GivenStringWriter();
 

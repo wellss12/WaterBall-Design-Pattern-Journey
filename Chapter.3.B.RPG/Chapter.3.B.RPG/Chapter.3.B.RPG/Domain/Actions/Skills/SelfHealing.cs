@@ -1,4 +1,6 @@
-﻿namespace Chapter._3.B.RPG.Domain.Actions.Skills;
+﻿using Chapter._3.B.RPG.Domain.Roles;
+
+namespace Chapter._3.B.RPG.Domain.Actions.Skills;
 
 public class SelfHealing : Skill
 {
@@ -13,4 +15,6 @@ public class SelfHealing : Skill
         Role.Hp += 150;
         Role.Mp -= MpCost;
     }
+
+    public override IEnumerable<Role> GetCandidates() => new[] {Role};
 }

@@ -1,9 +1,10 @@
 ﻿using Chapter._3.B.RPG.Domain.Actions;
 using Chapter._3.B.RPG.Domain.DecisionStrategies;
+using Chapter._3.B.RPG.Domain.Observers;
 using Chapter._3.B.RPG.Domain.States;
 using Action = Chapter._3.B.RPG.Domain.Actions.Action;
 
-namespace Chapter._3.B.RPG.Domain;
+namespace Chapter._3.B.RPG.Domain.Roles;
 
 public class Role
 {
@@ -29,6 +30,7 @@ public class Role
     public State State { get; set; }
     public Troop Troop { get; set; }
     public List<Action> Actions { get; }
+    private List<IRoleDeadObserver> RoleDeadObservers { get; } = new();
 
     public void StartAction()
     {
@@ -41,21 +43,21 @@ public class Role
     {
         var action = _decisionStrategy.ChooseAction();
 
-        var enemy = Troop.Battle.GetEnemies(this);
+        var candidates = action.GetCandidates().ToList();
         var targets = Enumerable.Empty<Role>();
 
-        if (enemy.Count() > action.TargetCount)
+        if (candidates.Count > action.TargetCount)
         {
-            targets = _decisionStrategy.ChooseTargets(enemy, action.TargetCount);
+            targets = _decisionStrategy.ChooseTargets(candidates, action.TargetCount);
         }
-        else if (enemy.Count() <= action.TargetCount)
+        else if (candidates.Count <= action.TargetCount)
         {
-            targets = enemy;
+            targets = candidates;
         }
 
         action.Execute(targets);
     }
-
+    
     public override string ToString()
     {
         return $"[{Troop.Number}]{Name}";
@@ -70,7 +72,17 @@ public class Role
         Hp -= str;
         if (Hp <= 0)
         {
+            foreach (var observer in RoleDeadObservers)
+            {
+                observer.Update(this);
+            }
+
             Console.WriteLine($"{this} 死亡。");
         }
+    }
+    
+    public void Register(IRoleDeadObserver observer)
+    {
+        RoleDeadObservers.Add(observer);
     }
 }

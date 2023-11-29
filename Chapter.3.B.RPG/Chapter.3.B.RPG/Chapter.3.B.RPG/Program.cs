@@ -3,6 +3,7 @@
 using Chapter._3.B.RPG.Domain;
 using Chapter._3.B.RPG.Domain.Actions.Skills;
 using Chapter._3.B.RPG.Domain.DecisionStrategies;
+using Chapter._3.B.RPG.Domain.Roles;
 using Action = Chapter._3.B.RPG.Domain.Actions.Action;
 
 namespace Chapter._3.B.RPG;
@@ -51,15 +52,22 @@ public class Program
                 else if (skillName == "火球")
                 {
                     skills.Add(new Fireball());
-                }else if (skillName == "自我治療")
+                }
+                else if (skillName == "自我治療")
                 {
                     skills.Add(new SelfHealing());
-                }else if (skillName == "石化")
+                }
+                else if (skillName == "石化")
                 {
                     skills.Add(new Petrochemical());
-                }else if (skillName == "下毒")
+                }
+                else if (skillName == "下毒")
                 {
-                   skills.Add(new Poison());
+                    skills.Add(new Poison());
+                }
+                else if (skillName == "召喚")
+                {
+                    skills.Add(new Summon());
                 }
             }
 

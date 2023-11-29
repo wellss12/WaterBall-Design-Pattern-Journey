@@ -1,4 +1,6 @@
-﻿namespace Chapter._3.B.RPG.Domain;
+﻿using Chapter._3.B.RPG.Domain.Roles;
+
+namespace Chapter._3.B.RPG.Domain;
 
 public class Battle
 {
@@ -28,18 +30,36 @@ public class Battle
 
     private void Round()
     {
-        foreach (var role in _t1.Roles.Union(_t2.Roles))
+        // 需要處理 Slime 途中加入 該如何讓他馬上在當前回合行動
+        for (var i = 0; i < _t1.Roles.Count ; i++)
         {
-            if (role.IsAlive())
+            var t1Role = _t1.Roles[i];
+            if (t1Role.IsAlive())
             {
-                role.StartAction();
+                t1Role.StartAction();
             }
-
+        
             if (IsGameOver())
             {
                 var gameOverMessage = IsHeroDead() ? "你失敗了！" : "你獲勝了！";
                 Console.WriteLine(gameOverMessage);
-                break;
+                return;
+            }
+        }
+        
+        for (var i = 0; i < _t2.Roles.Count ; i++)
+        {
+            var t1Role = _t2.Roles[i];
+            if (t1Role.IsAlive())
+            {
+                t1Role.StartAction();
+            }
+        
+            if (IsGameOver())
+            {
+                var gameOverMessage = IsHeroDead() ? "你失敗了！" : "你獲勝了！";
+                Console.WriteLine(gameOverMessage);
+                return;
             }
         }
     }

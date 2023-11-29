@@ -1,4 +1,5 @@
-﻿using Chapter._3.B.RPG.Domain.States;
+﻿using Chapter._3.B.RPG.Domain.Roles;
+using Chapter._3.B.RPG.Domain.States;
 
 namespace Chapter._3.B.RPG.Domain.Actions.Skills;
 
@@ -8,6 +9,7 @@ internal class Petrochemical : Skill
     public override int TargetCount => 1;
     public override int MpCost => 100;
     public override int Str => 0;
+
     public override void Execute(IEnumerable<Role> targets)
     {
         var targetNames = targets.Select(target => target.ToString());
@@ -17,6 +19,9 @@ internal class Petrochemical : Skill
         {
             target.State = new PetrochemicalState(target);
         }
+
         Role.Mp -= MpCost;
     }
+
+    public override IEnumerable<Role> GetCandidates() => Role.Troop.Battle.GetEnemies(Role);
 }

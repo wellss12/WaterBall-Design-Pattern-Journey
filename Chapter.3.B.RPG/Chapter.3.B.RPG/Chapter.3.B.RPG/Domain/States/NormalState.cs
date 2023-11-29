@@ -1,4 +1,6 @@
-﻿namespace Chapter._3.B.RPG.Domain.States;
+﻿using Chapter._3.B.RPG.Domain.Roles;
+
+namespace Chapter._3.B.RPG.Domain.States;
 
 public class NormalState : State
 {

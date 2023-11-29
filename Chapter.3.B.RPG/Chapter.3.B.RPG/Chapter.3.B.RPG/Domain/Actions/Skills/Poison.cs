@@ -1,4 +1,5 @@
-﻿using Chapter._3.B.RPG.Domain.States;
+﻿using Chapter._3.B.RPG.Domain.Roles;
+using Chapter._3.B.RPG.Domain.States;
 
 namespace Chapter._3.B.RPG.Domain.Actions.Skills;
 
@@ -8,6 +9,7 @@ public class Poison : Skill
     public override int TargetCount => 1;
     public override int MpCost => 80;
     public override int Str => 0;
+
     public override void Execute(IEnumerable<Role> targets)
     {
         var targetNames = targets.Select(target => target.ToString());
@@ -21,4 +23,6 @@ public class Poison : Skill
 
         Role.Mp -= MpCost;
     }
+
+    public override IEnumerable<Role> GetCandidates() => Role.Troop.Battle.GetEnemies(Role);
 }

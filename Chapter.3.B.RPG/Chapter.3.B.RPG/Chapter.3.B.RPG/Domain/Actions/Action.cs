@@ -1,4 +1,6 @@
-﻿namespace Chapter._3.B.RPG.Domain.Actions;
+﻿using Chapter._3.B.RPG.Domain.Roles;
+
+namespace Chapter._3.B.RPG.Domain.Actions;
 
 public abstract class Action
 {
@@ -9,4 +11,5 @@ public abstract class Action
     public Role Role { get; set; }
 
     public abstract void Execute(IEnumerable<Role> targets);
+    public abstract IEnumerable<Role> GetCandidates();
 }

@@ -1,4 +1,5 @@
-﻿using Action = Chapter._3.B.RPG.Domain.Actions.Action;
+﻿using Chapter._3.B.RPG.Domain.Roles;
+using Action = Chapter._3.B.RPG.Domain.Actions.Action;
 
 namespace Chapter._3.B.RPG.Domain.DecisionStrategies;
 

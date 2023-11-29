@@ -1,4 +1,6 @@
-﻿namespace Chapter._3.B.RPG.Domain.Actions.Skills;
+﻿using Chapter._3.B.RPG.Domain.Roles;
+
+namespace Chapter._3.B.RPG.Domain.Actions.Skills;
 
 public class Waterball : Skill
 {
@@ -21,4 +23,6 @@ public class Waterball : Skill
 
         Role.Mp -= MpCost;
     }
+
+    public override IEnumerable<Role> GetCandidates() => Role.Troop.Battle.GetEnemies(Role);
 }

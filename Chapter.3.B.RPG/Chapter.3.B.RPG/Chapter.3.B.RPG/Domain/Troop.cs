@@ -1,4 +1,6 @@
-﻿namespace Chapter._3.B.RPG.Domain;
+﻿using Chapter._3.B.RPG.Domain.Roles;
+
+namespace Chapter._3.B.RPG.Domain;
 
 public class Troop
 {
@@ -19,5 +21,6 @@ public class Troop
     public void Join(Role role)
     {
         Roles.Add(role);
+        role.Troop = this;
     }
 }
