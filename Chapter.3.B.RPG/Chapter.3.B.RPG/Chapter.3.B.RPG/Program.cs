@@ -68,9 +68,14 @@ public class Program
                 else if (skillName == "召喚")
                 {
                     skills.Add(new Summon());
-                }else if (skillName == "自爆")
+                }
+                else if (skillName == "自爆")
                 {
                     skills.Add(new SelfExplosion());
+                }
+                else if (skillName == "鼓舞")
+                {
+                    skills.Add(new Cheerup());
                 }
             }
 

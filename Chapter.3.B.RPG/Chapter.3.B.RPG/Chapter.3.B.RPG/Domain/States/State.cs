@@ -17,7 +17,13 @@ public abstract class State
 
     public virtual void ExecuteAction() => Role.ExecuteAction();
 
-    public virtual void EndRoundAction()
+    public virtual void Damage(Role target, int str)
+    {
+        Console.WriteLine($"{Role} 對 {target} 造成 {str} 點傷害。");
+        target.OnDamaged(str);
+    }
+
+    public void EndRoundAction()
     {
         Timeliness--;
         if (Timeliness <= 0)

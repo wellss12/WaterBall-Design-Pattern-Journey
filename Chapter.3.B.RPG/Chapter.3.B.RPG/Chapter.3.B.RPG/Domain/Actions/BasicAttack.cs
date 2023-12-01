@@ -14,8 +14,7 @@ public class BasicAttack : Action
         foreach (var target in targets)
         {
             Console.WriteLine($"{Role} 攻擊 {target}。");
-            Console.WriteLine($"{Role} 對 {target} 造成 {Role.Str} 點傷害。");
-            target.OnDamaged(Role.Str);
+            Role.Damage(target, Str);
         }
 
         Role.Mp -= MpCost;

@@ -17,7 +17,7 @@ public class PoisonedState : State
         Role.Hp -= 30;
         if (Role.IsAlive())
         {
-            Role.ExecuteAction();
+            base.ExecuteAction();
         }
         else
         {

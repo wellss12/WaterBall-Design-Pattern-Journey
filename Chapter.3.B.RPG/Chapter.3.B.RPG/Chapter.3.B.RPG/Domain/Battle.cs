@@ -81,6 +81,15 @@ public class Battle
         return enemies.Where(enemy => enemy.IsAlive());
     }
 
+    public IEnumerable<Role> GetAllies(Role target)
+    {
+        var allies = target.Troop == _t1
+            ? _t1.Roles
+            : _t2.Roles;
+        
+        return allies.Where(ally => ally.IsAlive());
+    }
+
     public IEnumerable<Role> GetAllRoles()
         => _t1.Roles
             .Union(_t2.Roles)

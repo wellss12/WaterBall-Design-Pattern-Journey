@@ -17,8 +17,7 @@ internal class SelfExplosion : Skill
         var enumerable = targets.Where(target => target != Role);
         foreach (var target in enumerable)
         {
-            Console.WriteLine($"{Role} 對 {target} 造成 {Str} 點傷害。");
-            target.OnDamaged(150);
+            Role.Damage(target, Str);
         }
         
         Role.Mp -= MpCost;

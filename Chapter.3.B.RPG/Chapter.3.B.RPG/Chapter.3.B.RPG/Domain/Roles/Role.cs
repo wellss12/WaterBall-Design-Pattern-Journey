@@ -30,7 +30,7 @@ public class Role
     public State State { get; set; }
     public Troop Troop { get; set; }
     public List<Action> Actions { get; }
-    private List<IRoleDeadObserver> RoleDeadObservers { get; } = new();
+    internal List<IRoleDeadObserver> RoleDeadObservers { get; } = new();
 
     public void StartAction()
     {
@@ -57,7 +57,7 @@ public class Role
 
         action.Execute(targets);
     }
-    
+
     public override string ToString()
     {
         return $"[{Troop.Number}]{Name}";
@@ -67,10 +67,12 @@ public class Role
 
     public bool IsAlive() => !IsDead();
 
+    public void Damage(Role target, int str) => State.Damage(target, str);
+
     public void OnDamaged(int str)
     {
         Hp -= str;
-        if (Hp <= 0)
+        if (IsDead())
         {
             foreach (var observer in RoleDeadObservers)
             {
@@ -80,7 +82,7 @@ public class Role
             Console.WriteLine($"{this} 死亡。");
         }
     }
-    
+
     public void Register(IRoleDeadObserver observer)
     {
         RoleDeadObservers.Add(observer);

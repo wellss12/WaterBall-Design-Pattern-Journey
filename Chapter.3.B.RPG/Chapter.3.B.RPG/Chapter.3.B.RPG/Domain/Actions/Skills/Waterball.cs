@@ -17,8 +17,7 @@ public class Waterball : Skill
 
         foreach (var target in targets)
         {
-            Console.WriteLine($"{Role} 對 {target} 造成 {Str} 點傷害。");
-            target.OnDamaged(Str);
+            Role.Damage(target, Str);
         }
 
         Role.Mp -= MpCost;
