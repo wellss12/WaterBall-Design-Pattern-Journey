@@ -80,4 +80,9 @@ public class Battle
         
         return enemies.Where(enemy => enemy.IsAlive());
     }
+
+    public IEnumerable<Role> GetAllRoles()
+        => _t1.Roles
+            .Union(_t2.Roles)
+            .Where(role => role.IsAlive());
 }
