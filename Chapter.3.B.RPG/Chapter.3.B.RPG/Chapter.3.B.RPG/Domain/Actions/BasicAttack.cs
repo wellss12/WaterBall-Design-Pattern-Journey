@@ -6,7 +6,6 @@ public class BasicAttack : Action
 {
     public override string Name => "普通攻擊";
     public override int TargetCount => 1;
-    public override int MpCost => 0;
     public override int Str => Role.Str;
 
     public override void Execute(IEnumerable<Role> targets)
@@ -16,8 +15,6 @@ public class BasicAttack : Action
             Console.WriteLine($"{Role} 攻擊 {target}。");
             Role.Damage(target, Str);
         }
-
-        Role.Mp -= MpCost;
     }
 
     public override IEnumerable<Role> GetCandidates() => Role.Troop.Battle.GetEnemies(Role);

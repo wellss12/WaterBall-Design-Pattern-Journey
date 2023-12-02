@@ -9,18 +9,12 @@ public class Fireball : Skill
     public override int MpCost => 50;
     public override int Str => 50;
 
-    public override void Execute(IEnumerable<Role> targets)
+    protected override void Action(IEnumerable<Role> targets)
     {
-        var targetNames = targets.Select(target => target.ToString());
-        var targetNameString = string.Join(", ", targetNames);
-        Console.WriteLine($"{Role} 對 {targetNameString} 使用了 {Name}。");
-
         foreach (var target in targets)
         {
             Role.Damage(target, Str);
         }
-
-        Role.Mp -= MpCost;
     }
 
     public override IEnumerable<Role> GetCandidates() => Role.Troop.Battle.GetEnemies(Role);
