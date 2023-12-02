@@ -130,6 +130,19 @@ public class Tests
         actual.Should().Be(GetExpected());
     }
 
+    [Test]
+    public void one_punch()
+    {
+        GivenFilePath("TestCases/one-punch.in");
+        GivenStringReader();
+        GivenStringWriter();
+
+        Program.Main();
+
+        var actual = GetActual();
+        actual.Should().Be(GetExpected());
+    }
+
     private void GivenFilePath(string path)
     {
         _filePath = path;

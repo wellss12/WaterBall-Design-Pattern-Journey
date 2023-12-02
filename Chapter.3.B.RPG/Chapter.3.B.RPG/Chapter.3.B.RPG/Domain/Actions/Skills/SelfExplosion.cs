@@ -16,6 +16,7 @@ public class SelfExplosion : Skill
         {
             Role.Damage(target, Str);
         }
+        
         Role.OnDamaged(Role.Hp);
     }
 

@@ -2,6 +2,7 @@
 
 using Chapter._3.B.RPG.Domain;
 using Chapter._3.B.RPG.Domain.Actions.Skills;
+using Chapter._3.B.RPG.Domain.Actions.Skills.OnePunchHandlers;
 using Chapter._3.B.RPG.Domain.DecisionStrategies;
 using Chapter._3.B.RPG.Domain.Roles;
 using Action = Chapter._3.B.RPG.Domain.Actions.Action;
@@ -79,6 +80,14 @@ public class Program
                 }else if (skillName == "詛咒")
                 {
                     skills.Add(new Curse());
+                }else if (skillName == "一拳攻擊")
+                {
+                    skills.Add(new OnePunch(
+                        new HpGreaterThanOrEqualTo500Handler(
+                            new IsPoisonedOrPetrochemicalHandler(
+                                new IsCheerupHandler(
+                                    new IsNormalHandler(null)))))
+                    );
                 }
             }
 
