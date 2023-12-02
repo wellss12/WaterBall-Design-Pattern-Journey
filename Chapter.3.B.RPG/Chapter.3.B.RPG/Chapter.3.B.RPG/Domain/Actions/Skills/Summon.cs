@@ -1,3 +1,4 @@
+using Chapter._3.B.RPG.Domain.DecisionStrategies;
 using Chapter._3.B.RPG.Domain.Observers;
 using Chapter._3.B.RPG.Domain.Roles;
 
@@ -10,9 +11,9 @@ public class Summon : Skill
 
     protected override void Action(IEnumerable<Role> targets)
     {
-        var summon = new Slime();
-        Role.Troop.Join(summon);
-        summon.Register(new SlimeObserver(Role));
+        var slime = new Role("Slime", 100, 0, 50, new List<Action>(), new AIDecisionStrategy());
+        Role.Troop.Join(slime);
+        slime.Register(new SlimeObserver(Role));
     }
 
     public override IEnumerable<Role> GetCandidates() => Enumerable.Empty<Role>();

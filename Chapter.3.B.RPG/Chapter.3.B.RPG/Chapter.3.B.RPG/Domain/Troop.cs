@@ -23,4 +23,6 @@ public class Troop
         Roles.Add(role);
         role.Troop = this;
     }
+
+    public override string ToString() => $"[{Number}]";
 }

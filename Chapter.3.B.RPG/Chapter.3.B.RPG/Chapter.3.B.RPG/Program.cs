@@ -1,6 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using Chapter._3.B.RPG.Domain;
+﻿using Chapter._3.B.RPG.Domain;
 using Chapter._3.B.RPG.Domain.Actions.Skills;
 using Chapter._3.B.RPG.Domain.Actions.Skills.OnePunchHandlers;
 using Chapter._3.B.RPG.Domain.DecisionStrategies;
@@ -41,63 +39,42 @@ public class Program
             var hp = int.Parse(roleInfo[1]);
             var mp = int.Parse(roleInfo[2]);
             var str = int.Parse(roleInfo[3]);
-            var skillNames = roleInfo[4..];
+            var skills = GetSkills(roleInfo[4..]).ToList();
 
-            var skills = new List<Action>();
-            foreach (var skillName in skillNames)
-            {
-                if (skillName == "水球")
-                {
-                    skills.Add(new Waterball());
-                }
-                else if (skillName == "火球")
-                {
-                    skills.Add(new Fireball());
-                }
-                else if (skillName == "自我治療")
-                {
-                    skills.Add(new SelfHealing());
-                }
-                else if (skillName == "石化")
-                {
-                    skills.Add(new Petrochemical());
-                }
-                else if (skillName == "下毒")
-                {
-                    skills.Add(new Poison());
-                }
-                else if (skillName == "召喚")
-                {
-                    skills.Add(new Summon());
-                }
-                else if (skillName == "自爆")
-                {
-                    skills.Add(new SelfExplosion());
-                }
-                else if (skillName == "鼓舞")
-                {
-                    skills.Add(new Cheerup());
-                }else if (skillName == "詛咒")
-                {
-                    skills.Add(new Curse());
-                }else if (skillName == "一拳攻擊")
-                {
-                    skills.Add(new OnePunch(
-                        new HpGreaterThanOrEqualTo500Handler(
-                            new IsPoisonedOrPetrochemicalHandler(
-                                new IsCheerupHandler(
-                                    new IsNormalHandler(null)))))
-                    );
-                }
-            }
-
-            var role = name == "英雄"
-                ? new Hero(name, hp, mp, str, skills, new CLIDecisionStrategy())
-                : new Role(name, hp, mp, str, skills, new AIDecisionStrategy());
+            DecisionStrategy strategy = name == "英雄"
+                ? new CLIDecisionStrategy()
+                : new AIDecisionStrategy();
+            var role = new Role(name, hp, mp, str, skills, strategy);
             roles.Add(role);
         }
 
-        var troop = new Troop(int.Parse(troopStart.Substring(4, 1)), roles);
-        return troop;
+        var number = int.Parse(troopStart.Substring(4, 1));
+        return new Troop(number, roles);
+    }
+
+    private static IEnumerable<Action> GetSkills(string[] skillNames)
+    {
+        var actionMap = new Dictionary<string, Func<Action>>()
+        {
+            {"水球", () => new Waterball()},
+            {"火球", () => new Fireball()},
+            {"自我治療", () => new SelfHealing()},
+            {"石化", () => new Petrochemical()},
+            {"下毒", () => new Poison()},
+            {"召喚", () => new Summon()},
+            {"自爆", () => new SelfExplosion()},
+            {"鼓舞", () => new Cheerup()},
+            {"詛咒", () => new Curse()},
+            {"一拳攻擊", () => new OnePunch(
+                new HpGreaterThanOrEqualTo500Handler(
+                    new IsPoisonedOrPetrochemicalHandler(
+                        new IsCheerupHandler(
+                            new IsNormalHandler(null)))))
+            }
+        };
+
+        return skillNames
+            .Where(skill => actionMap.ContainsKey(skill))
+            .Select(skill => actionMap[skill]());
     }
 }

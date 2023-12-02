@@ -34,7 +34,7 @@ public class Role
 
     public void StartAction()
     {
-        Console.WriteLine($"輪到 [{Troop.Number}]{Name} (HP: {Hp}, MP: {Mp}, STR: {Str}, {State})。");
+        Console.WriteLine($"輪到 {Troop}{Name} (HP: {Hp}, MP: {Mp}, STR: {Str}, {State})。");
         State.ExecuteAction();
         State.EndRoundAction();
     }

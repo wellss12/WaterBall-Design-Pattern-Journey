@@ -14,7 +14,7 @@ public class SlimeObserver : IRoleDeadObserver
     public void Update(Role role)
     {
         // TODO
-        if (role is Slime && _summoner.IsAlive())
+        if (role.Name == "Slime" && _summoner.IsAlive())
         {
             _summoner.Hp += 30;
         }

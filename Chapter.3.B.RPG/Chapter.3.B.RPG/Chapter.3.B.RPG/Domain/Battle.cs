@@ -9,7 +9,7 @@ public class Battle
 
     public Battle(Troop t1, Troop t2)
     {
-        if (t1.Roles.First() is not Hero)
+        if (t1.Roles.First().Name is not "英雄")
         {
             throw new Exception("第一個軍隊必須為英雄");
         }
@@ -70,7 +70,7 @@ public class Battle
 
     private bool IsHeroDead() => FindHero().IsDead();
 
-    private Role FindHero() => _t1.Roles.Single(role => role is Hero);
+    private Role FindHero() => _t1.Roles.Single(role => role.Name == "英雄");
 
     public IEnumerable<Role> GetEnemies(Role target)
     {
