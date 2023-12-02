@@ -11,6 +11,10 @@ public class AIDecisionStrategy : DecisionStrategy
     {
         while (true)
         {
+            if (Role.Name == "Ally")
+            {
+                
+            }
             ShowActionMenu();
             var actionIndex = _seed % Role.Actions.Count;
             var action = Role.Actions[actionIndex];
@@ -27,6 +31,11 @@ public class AIDecisionStrategy : DecisionStrategy
 
     public override IEnumerable<Role> ChooseTargets(IEnumerable<Role> candidates, int targetCount)
     {
+        if (Role.Name == "Ally")
+        {
+                
+        }
+
         for (var index = 0; index < targetCount; index++)
         {
             var candidateIndex = (_seed + index) % candidates.Count();

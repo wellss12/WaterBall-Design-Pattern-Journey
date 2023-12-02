@@ -30,7 +30,7 @@ public class Role
     public State State { get; set; }
     public Troop Troop { get; set; }
     public List<Action> Actions { get; }
-    internal List<IRoleDeadObserver> RoleDeadObservers { get; } = new();
+    public List<IRoleDeadObserver> RoleDeadObservers { get; } = new();
 
     public void StartAction()
     {
@@ -48,7 +48,9 @@ public class Role
 
         if (candidates.Count > action.TargetCount)
         {
-            targets = _decisionStrategy.ChooseTargets(candidates, action.TargetCount);
+            targets = _decisionStrategy
+                .ChooseTargets(candidates, action.TargetCount)
+                .ToList();
         }
         else if (candidates.Count <= action.TargetCount)
         {
@@ -83,8 +85,5 @@ public class Role
         }
     }
 
-    public void Register(IRoleDeadObserver observer)
-    {
-        RoleDeadObservers.Add(observer);
-    }
+    public void Register(IRoleDeadObserver observer) => RoleDeadObservers.Add(observer);
 }

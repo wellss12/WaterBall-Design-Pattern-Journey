@@ -10,6 +10,7 @@ public class SlimeObserver : IRoleDeadObserver
     {
         _summoner = summoner;
     }
+
     public void Update(Role role)
     {
         // TODO

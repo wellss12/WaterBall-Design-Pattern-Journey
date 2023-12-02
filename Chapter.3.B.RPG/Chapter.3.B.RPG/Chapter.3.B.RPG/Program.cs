@@ -76,6 +76,9 @@ public class Program
                 else if (skillName == "鼓舞")
                 {
                     skills.Add(new Cheerup());
+                }else if (skillName == "詛咒")
+                {
+                    skills.Add(new Curse());
                 }
             }
 
