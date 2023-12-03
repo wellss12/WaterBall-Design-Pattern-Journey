@@ -8,10 +8,7 @@ public class HpGreaterThanOrEqualTo500Handler : OnePunchHandler
     {
     }
 
-    protected override bool IsMatch(Role target) => target.Hp >= 500;
+    protected override bool IsMatch(Role attackee) => attackee.Hp >= 500;
 
-    protected override void DoHanding(Role attacker, Role attackee)
-    {
-        attacker.Damage(attackee, 300);
-    }
+    protected override void DoHanding(Role attacker, Role attackee) => attacker.Damage(attackee, 300);
 }

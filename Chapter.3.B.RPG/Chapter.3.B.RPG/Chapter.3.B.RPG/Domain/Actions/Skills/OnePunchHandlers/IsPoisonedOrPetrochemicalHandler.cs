@@ -9,7 +9,7 @@ public class IsPoisonedOrPetrochemicalHandler : OnePunchHandler
     {
     }
 
-    protected override bool IsMatch(Role target) => target.State is PoisonedState or PetrochemicalState;
+    protected override bool IsMatch(Role attackee) => attackee.State is PoisonedState or PetrochemicalState;
 
     protected override void DoHanding(Role attacker, Role attackee)
     {

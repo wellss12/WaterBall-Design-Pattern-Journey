@@ -14,9 +14,8 @@ public class OnePunch : Skill
     public override string Name => "一拳攻擊";
     public override int TargetCount => 1;
     public override int MpCost => 180;
-    public override int Str { get; }
 
-    protected override void Action(IEnumerable<Role> targets)
+    protected override void ExecuteAction(IEnumerable<Role> targets)
     {
         foreach (var target in targets)
         {
@@ -24,5 +23,5 @@ public class OnePunch : Skill
         }
     }
 
-    public override IEnumerable<Role> GetCandidates() => Role.Troop.Battle.GetEnemies(Role);
+    public override IEnumerable<Role> GetCandidates() => Role.Troop.GetAliveEnemies();
 }

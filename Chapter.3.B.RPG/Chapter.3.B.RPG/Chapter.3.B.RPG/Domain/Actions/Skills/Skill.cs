@@ -4,6 +4,9 @@ namespace Chapter._3.B.RPG.Domain.Actions.Skills;
 
 public abstract class Skill : Action
 {
+    public override int Str => 0;
+    public override int TargetCount => 0;
+
     private void PreAction(IEnumerable<Role> targets)
     {
         var targetNames = string.Join(", ", targets.Select(target => target.ToString()));
@@ -16,11 +19,11 @@ public abstract class Skill : Action
     public override void Execute(IEnumerable<Role> targets)
     {
         PreAction(targets);
-        Action(targets);
+        ExecuteAction(targets);
         PostAction();
     }
 
-    protected abstract void Action(IEnumerable<Role> targets);
+    protected abstract void ExecuteAction(IEnumerable<Role> targets);
 
     private void PostAction() => Role.Mp -= MpCost;
 }

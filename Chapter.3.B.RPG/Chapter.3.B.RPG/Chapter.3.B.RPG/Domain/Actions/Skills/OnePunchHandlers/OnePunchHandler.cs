@@ -11,7 +11,7 @@ public abstract class OnePunchHandler
         _next = next;
     }
 
-    protected abstract bool IsMatch(Role target);
+    protected abstract bool IsMatch(Role attackee);
     protected abstract void DoHanding(Role attacker, Role attackee);
 
     public void Handle(Role attacker, Role attackee)
@@ -22,12 +22,7 @@ public abstract class OnePunchHandler
         }
         else
         {
-            if (_next is null)
-            {
-                throw new NotSupportedException();
-            }
-
-            _next.Handle(attacker, attackee);
+            _next?.Handle(attacker, attackee);
         }
     }
 }

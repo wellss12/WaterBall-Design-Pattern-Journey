@@ -17,5 +17,5 @@ public class BasicAttack : Action
         }
     }
 
-    public override IEnumerable<Role> GetCandidates() => Role.Troop.Battle.GetEnemies(Role);
+    public override IEnumerable<Role> GetCandidates() => Role.Troop.GetAliveEnemies();
 }

@@ -10,26 +10,25 @@ public class Role
 {
     public Role(string name, int hp, int mp, int str, List<Action> actions, DecisionStrategy decisionStrategy)
     {
+        decisionStrategy.Role = this;
         _decisionStrategy = decisionStrategy;
         Name = name;
         Hp = hp;
         Mp = mp;
         Str = str;
         State = new NormalState(this);
-        actions.Insert(0, new BasicAttack());
-        Actions = actions;
+        Actions.AddRange(actions);
         Actions.ForEach(action => action.Role = this);
-        decisionStrategy.Role = this;
     }
 
     private readonly DecisionStrategy _decisionStrategy;
     public string Name { get; }
     public int Hp { get; set; }
     public int Mp { get; set; }
-    public int Str { get; set; }
+    public int Str { get; }
     public State State { get; set; }
     public Troop Troop { get; set; }
-    public List<Action> Actions { get; }
+    public List<Action> Actions { get; } = new() {new BasicAttack()};
     public List<IRoleDeadObserver> RoleDeadObservers { get; } = new();
 
     public void StartAction()
@@ -42,27 +41,23 @@ public class Role
     public void ExecuteAction()
     {
         var action = _decisionStrategy.ChooseAction();
-
-        var candidates = action.GetCandidates().ToList();
-        var targets = Enumerable.Empty<Role>();
-
-        if (candidates.Count > action.TargetCount)
-        {
-            targets = _decisionStrategy
-                .ChooseTargets(candidates, action.TargetCount)
-                .ToList();
-        }
-        else if (candidates.Count <= action.TargetCount)
-        {
-            targets = candidates;
-        }
-
+        var targets = ChooseTargets(action);
         action.Execute(targets);
     }
 
-    public override string ToString()
+    private IEnumerable<Role> ChooseTargets(Action action)
     {
-        return $"[{Troop.Number}]{Name}";
+        var candidates = action.GetCandidates().ToArray();
+        if (candidates.Length > action.TargetCount)
+        {
+            return _decisionStrategy
+                .ChooseTargets(candidates, action.TargetCount)
+                .ToArray();
+        }
+
+        return candidates.Length <= action.TargetCount
+            ? candidates
+            : Enumerable.Empty<Role>();
     }
 
     public bool IsDead() => Hp <= 0;
@@ -86,4 +81,6 @@ public class Role
     }
 
     public void Register(IRoleDeadObserver observer) => RoleDeadObservers.Add(observer);
+
+    public override string ToString() => $"[{Troop.Number}]{Name}";
 }

@@ -10,8 +10,8 @@ public class CLIDecisionStrategy : DecisionStrategy
         while (true)
         {
             ShowActionMenu();
-            if (!int.TryParse(Console.ReadLine(), out var actionIndex) &&
-                actionIndex < 0 &&
+            if (!int.TryParse(Console.ReadLine(), out var actionIndex) ||
+                actionIndex < 0 ||
                 actionIndex > Role.Actions.Count - 1)
             {
                 Console.WriteLine($"請輸入 0 ~ {Role.Actions.Count - 1}");
@@ -20,13 +20,12 @@ public class CLIDecisionStrategy : DecisionStrategy
 
             var action = Role.Actions[actionIndex];
 
-            if (action.MpCost > Role.Mp)
+            if (HasEnoughMp(action.MpCost))
             {
-                Console.WriteLine("你缺乏 MP，不能進行此行動。");
-                continue;
+                return action;
             }
 
-            return action;
+            Console.WriteLine("你缺乏 MP，不能進行此行動。");
         }
     }
 
@@ -34,9 +33,11 @@ public class CLIDecisionStrategy : DecisionStrategy
     {
         var candidateNames = candidates.Select((role, index) => $"({index}) {role}");
         Console.WriteLine($"選擇 {targetCount} 位目標: {string.Join(' ', candidateNames)}");
-        // TODO 驗證 index?
-        var readLine = Console.ReadLine();
-        var targetIndexes = readLine.Split(", ").Select(int.Parse);
-        return targetIndexes.Select(candidates.ElementAt);
+
+        var targetInput = Console.ReadLine();
+        return targetInput
+            .Split(", ")
+            .Select(int.Parse)
+            .Select(candidates.ElementAt);
     }
 }

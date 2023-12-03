@@ -9,7 +9,7 @@ internal class Cheerup : Skill
     public override int TargetCount => 3;
     public override int MpCost => 100;
 
-    protected override void Action(IEnumerable<Role> targets)
+    protected override void ExecuteAction(IEnumerable<Role> targets)
     {
         foreach (var target in targets)
         {
@@ -18,7 +18,5 @@ internal class Cheerup : Skill
     }
 
     public override IEnumerable<Role> GetCandidates()
-    {
-        return Role.Troop.Battle.GetAllies(Role).Where(role => role != Role);
-    }
+        => Role.Troop.GetAliveAllies().Where(role => role != Role);
 }

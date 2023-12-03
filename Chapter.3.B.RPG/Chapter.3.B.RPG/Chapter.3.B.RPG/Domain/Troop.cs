@@ -25,4 +25,16 @@ public class Troop
     }
 
     public override string ToString() => $"[{Number}]";
+
+    public IEnumerable<Role> GetAliveAllies()
+    {
+        var roles = Number == 1 ? Battle.T1.Roles : Battle.T2.Roles;
+        return roles.Where(role => role.IsAlive());
+    }
+    
+    public IEnumerable<Role> GetAliveEnemies()
+    {
+        var roles = Number == 1 ? Battle.T2.Roles : Battle.T1.Roles;
+        return roles.Where(role => role.IsAlive());
+    }
 }

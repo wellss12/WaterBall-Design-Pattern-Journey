@@ -9,7 +9,7 @@ public class Summon : Skill
     public override string Name => "召喚";
     public override int MpCost => 150;
 
-    protected override void Action(IEnumerable<Role> targets)
+    protected override void ExecuteAction(IEnumerable<Role> targets)
     {
         var slime = new Role("Slime", 100, 0, 50, new List<Action>(), new AIDecisionStrategy());
         Role.Troop.Join(slime);

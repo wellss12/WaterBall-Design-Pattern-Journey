@@ -9,7 +9,7 @@ public class IsCheerupHandler : OnePunchHandler
     {
     }
 
-    protected override bool IsMatch(Role target) => target.State is CheerupState;
+    protected override bool IsMatch(Role attackee) => attackee.State is CheerupState;
 
     protected override void DoHanding(Role attacker, Role attackee)
     {

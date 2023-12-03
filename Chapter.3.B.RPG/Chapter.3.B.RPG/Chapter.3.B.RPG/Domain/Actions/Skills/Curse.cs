@@ -9,24 +9,18 @@ public class Curse : Skill
     public override int TargetCount => 1;
     public override int MpCost => 100;
 
-    protected override void Action(IEnumerable<Role> targets)
+    protected override void ExecuteAction(IEnumerable<Role> targets)
     {
-        var enumerable = targets.Where(target =>
-        {
-            var curseObservers = target.RoleDeadObservers
-                .Where(t => t is CurseObserver)
-                .Cast<CurseObserver>();
-            return curseObservers.All(observer => observer.Cursator != Role);
-        });
+        var cursedTargets = targets.Where(target => target.RoleDeadObservers
+            .Any(observer => observer is CurseObserver curseObserver && curseObserver.Cursator == Role));
 
-        foreach (var target in enumerable)
+        var unCursedTargets = targets.Except(cursedTargets);
+
+        foreach (var target in unCursedTargets)
         {
             target.Register(new CurseObserver(Role));
         }
     }
 
-    public override IEnumerable<Role> GetCandidates()
-    {
-        return Role.Troop.Battle.GetEnemies(Role);
-    }
+    public override IEnumerable<Role> GetCandidates() => Role.Troop.GetAliveEnemies();
 }

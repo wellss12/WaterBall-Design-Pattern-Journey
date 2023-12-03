@@ -9,10 +9,7 @@ public class IsNormalHandler : OnePunchHandler
     {
     }
 
-    protected override bool IsMatch(Role target) => target.State is NormalState;
+    protected override bool IsMatch(Role attackee) => attackee.State is NormalState;
 
-    protected override void DoHanding(Role attacker, Role attackee)
-    {
-        attacker.Damage(attackee, 100);
-    }
+    protected override void DoHanding(Role attacker, Role attackee) => attacker.Damage(attackee, 100);
 }

@@ -8,7 +8,7 @@ public class SelfHealing : Skill
     public override int TargetCount => 1;
     public override int MpCost => 50;
 
-    protected override void Action(IEnumerable<Role> targets) => Role.Hp += 150;
+    protected override void ExecuteAction(IEnumerable<Role> targets) => Role.Hp += 150;
 
     public override IEnumerable<Role> GetCandidates() => Enumerable.Empty<Role>();
 }

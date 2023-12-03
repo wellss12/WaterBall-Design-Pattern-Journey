@@ -9,7 +9,7 @@ public class Petrochemical : Skill
     public override int TargetCount => 1;
     public override int MpCost => 100;
 
-    protected override void Action(IEnumerable<Role> targets)
+    protected override void ExecuteAction(IEnumerable<Role> targets)
     {
         foreach (var target in targets)
         {
@@ -17,8 +17,5 @@ public class Petrochemical : Skill
         }
     }
 
-    public override IEnumerable<Role> GetCandidates()
-    {
-        return Role.Troop.Battle.GetEnemies(Role);
-    }
+    public override IEnumerable<Role> GetCandidates() => Role.Troop.GetAliveEnemies();
 }

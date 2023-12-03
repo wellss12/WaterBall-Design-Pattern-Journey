@@ -23,7 +23,7 @@ public abstract class State
         target.OnDamaged(str);
     }
 
-    public void EndRoundAction()
+    internal void EndRoundAction()
     {
         Timeliness--;
         if (Timeliness <= 0)

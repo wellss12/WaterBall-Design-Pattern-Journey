@@ -9,7 +9,7 @@ public class SelfExplosion : Skill
     public override int MpCost => 200;
     public override int Str => 150;
 
-    protected override void Action(IEnumerable<Role> targets)
+    protected override void ExecuteAction(IEnumerable<Role> targets)
     {
         var enumerable = targets.Where(target => target != Role);
         foreach (var target in enumerable)
@@ -17,11 +17,20 @@ public class SelfExplosion : Skill
             Role.Damage(target, Str);
         }
         
+        CommitSuicide();
+    }
+
+    private void CommitSuicide()
+    {
         Role.OnDamaged(Role.Hp);
     }
 
     public override IEnumerable<Role> GetCandidates()
-        => Role.Troop.Battle
-            .GetAllRoles()
+    {
+        var troop = Role.Troop;
+        return troop
+            .GetAliveAllies()
+            .Union(troop.GetAliveEnemies())
             .Where(role => role != Role);
+    }
 }
