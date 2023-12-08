@@ -8,7 +8,7 @@ namespace Chapter._3.B.RPG.Domain.Roles;
 
 public class Role
 {
-    public Role(string name, int hp, int mp, int str, List<Action> actions, DecisionStrategy decisionStrategy)
+    public Role(string name, int hp, int mp, int str, IEnumerable<Action> actions, DecisionStrategy decisionStrategy)
     {
         decisionStrategy.Role = this;
         _decisionStrategy = decisionStrategy;
@@ -17,19 +17,23 @@ public class Role
         Mp = mp;
         Str = str;
         State = new NormalState(this);
-        Actions.AddRange(actions);
-        Actions.ForEach(action => action.Role = this);
+        _actions.AddRange(actions);
+        _actions.ForEach(action => action.Role = this);
     }
 
     private readonly DecisionStrategy _decisionStrategy;
+    private readonly List<IRoleDeadObserver> _roleDeadObservers = new();
+    private readonly List<Action> _actions = new() {new BasicAttack()};
     public string Name { get; }
     public int Hp { get; set; }
     public int Mp { get; set; }
     public int Str { get; }
     public State State { get; set; }
     public Troop Troop { get; set; }
-    public List<Action> Actions { get; } = new() {new BasicAttack()};
-    public List<IRoleDeadObserver> RoleDeadObservers { get; } = new();
+
+    public IReadOnlyList<Action> Actions => _actions;
+
+    public IEnumerable<IRoleDeadObserver> RoleDeadObservers => _roleDeadObservers;
 
     public void StartAction()
     {
@@ -38,7 +42,7 @@ public class Role
         State.EndRoundAction();
     }
 
-    public void ExecuteAction()
+    internal void ExecuteAction()
     {
         var action = _decisionStrategy.ChooseAction();
         var targets = ChooseTargets(action);
@@ -64,7 +68,7 @@ public class Role
 
     public bool IsAlive() => !IsDead();
 
-    public void Damage(Role target, int str) => State.Damage(target, str);
+    internal void Damage(Role target, int str) => State.Damage(target, str);
 
     public void OnDamaged(int str)
     {
@@ -80,7 +84,7 @@ public class Role
         }
     }
 
-    public void Register(IRoleDeadObserver observer) => RoleDeadObservers.Add(observer);
+    public void Register(IRoleDeadObserver observer) => _roleDeadObservers.Add(observer);
 
     public override string ToString() => $"[{Troop.Number}]{Name}";
 }

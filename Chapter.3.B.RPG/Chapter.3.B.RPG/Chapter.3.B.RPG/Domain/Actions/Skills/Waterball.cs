@@ -7,13 +7,12 @@ public class Waterball : Skill
     public override string Name => "水球";
     public override int TargetCount => 1;
     public override int MpCost => 50;
-    public override int Str => 120;
 
     protected override void ExecuteAction(IEnumerable<Role> targets)
     {
         foreach (var target in targets)
         {
-            Role.Damage(target, Str);
+            Role.Damage(target, 120);
         }
     }
 

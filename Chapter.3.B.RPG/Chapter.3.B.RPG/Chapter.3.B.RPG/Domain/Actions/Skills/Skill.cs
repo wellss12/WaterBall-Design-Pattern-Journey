@@ -4,7 +4,6 @@ namespace Chapter._3.B.RPG.Domain.Actions.Skills;
 
 public abstract class Skill : Action
 {
-    public override int Str => 0;
     public override int TargetCount => 0;
 
     private void PreAction(IEnumerable<Role> targets)

@@ -5,9 +5,8 @@ namespace Chapter._3.B.RPG.Domain.Actions;
 public abstract class Action
 {
     public abstract string Name { get; }
-    public abstract int Str { get; }
     public abstract int TargetCount { get; }
-    public virtual int MpCost => 0;
+    public abstract int MpCost { get; }
     public Role Role { get; set; }
 
     public abstract void Execute(IEnumerable<Role> targets);
