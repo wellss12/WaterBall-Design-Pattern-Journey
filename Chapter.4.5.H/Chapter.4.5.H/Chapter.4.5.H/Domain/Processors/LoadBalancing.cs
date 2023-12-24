@@ -13,17 +13,22 @@ public class LoadBalancing : HttpRequestProcessor
 
     public override void SendRequest(HttpRequest request)
     {
+        RoundRobin(request);
+        Next.SendRequest(request);
+    }
+
+    private void RoundRobin(HttpRequest request)
+    {
         if (request.AvailableIps.Any())
         {
-            if (!RoundRobinIndexMap.TryAdd(request.Url.Host, 0))
+            var host = request.Url.Host;
+            if (!RoundRobinIndexMap.TryAdd(host, 0))
             {
-                RoundRobinIndexMap[request.Url.Host]++;
+                RoundRobinIndexMap[host]++;
             }
 
-            var index = RoundRobinIndexMap[request.Url.Host] % request.AvailableIps.Count();
+            var index = RoundRobinIndexMap[host] % request.AvailableIps.Count();
             request.ActualHost = request.AvailableIps.ElementAt(index);
         }
-
-        Next.SendRequest(request);
     }
 }

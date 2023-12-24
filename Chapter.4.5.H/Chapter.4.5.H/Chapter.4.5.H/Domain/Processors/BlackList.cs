@@ -14,11 +14,15 @@ public class BlackList : HttpRequestProcessor
 
     public override void SendRequest(HttpRequest request)
     {
+        Validate(request);
+        Next.SendRequest(request);
+    }
+
+    private void Validate(HttpRequest request)
+    {
         if (_values.Contains(request.ActualHost))
         {
             throw new NotSupportedException("The host is in the black list.");
         }
-
-        Next.SendRequest(request);
     }
 }

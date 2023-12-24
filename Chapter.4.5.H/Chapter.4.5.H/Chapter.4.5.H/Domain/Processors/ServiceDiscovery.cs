@@ -17,16 +17,7 @@ public class ServiceDiscovery : HttpRequestProcessor
     public override void SendRequest(HttpRequest request)
     {
         CleanExpiredIps();
-
-        if (_hostIpMap.TryGetValue(request.Url.Host, out var ips))
-        {
-            request.AvailableIps = ips.Except(_inValidHostIpMap.Keys);
-            request.ActualHost = request.AvailableIps.First();
-        }
-        else
-        {
-            throw new NotSupportedException("The host is not in the hostIpMap.");
-        }
+        Discover(request);
 
         try
         {
@@ -37,6 +28,19 @@ public class ServiceDiscovery : HttpRequestProcessor
             // 10 分鐘太久，改用 10 秒
             _inValidHostIpMap.Add(request.ActualHost, DateTime.Now.Add(_inValidTime));
             Console.WriteLine($"[ERROR] {e.Message}, Request: {request}");
+        }
+    }
+
+    private void Discover(HttpRequest request)
+    {
+        if (_hostIpMap.TryGetValue(request.Url.Host, out var ips))
+        {
+            request.AvailableIps = ips.Except(_inValidHostIpMap.Keys);
+            request.ActualHost = request.AvailableIps.First();
+        }
+        else
+        {
+            throw new NotSupportedException("The host is not in the hostIpMap.");
         }
     }
 
